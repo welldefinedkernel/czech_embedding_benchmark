@@ -9,6 +9,7 @@ dependencies = [
     "deepeval>=4.0.5",
     "dotenv>=0.9.9",
     "langchain-openai>=1.2.2",
+    "mteb>=2.12.30",
     "pydantic>=2.13.4",
 ]
 
