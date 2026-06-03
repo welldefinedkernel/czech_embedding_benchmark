@@ -12,6 +12,10 @@ wheels/
 # Datasets
 czech_text_document_corpus_v20/
 ms_marco/
+data/synthetic/
 
 # Environment variables
 .env
+
+# DeepEval
+.deepeval/
