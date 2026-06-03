@@ -4,7 +4,12 @@ version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
-dependencies = []
+dependencies = [
+    "deepeval>=4.0.5",
+    "dotenv>=0.9.9",
+    "langchain-openai>=1.2.2",
+    "pydantic>=2.13.4",
+]
 
 [dependency-groups]
 dev = [
