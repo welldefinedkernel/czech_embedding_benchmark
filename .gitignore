@@ -19,3 +19,6 @@ data/synthetic/
 
 # DeepEval
 .deepeval/
+
+# Evaluation results
+results/
