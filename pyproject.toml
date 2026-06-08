@@ -7,6 +7,11 @@ requires-python = ">=3.13"
 dependencies = [
     "datasets>=3.0.0",
     "pyclean>=3.7.0",
+    "datasets>=3.0.0",
+    "deepeval>=4.0.5",
+    "dotenv>=0.9.9",
+    "langchain-openai>=1.2.2",
+    "pydantic>=2.13.4",
 ]
 
 [dependency-groups]
