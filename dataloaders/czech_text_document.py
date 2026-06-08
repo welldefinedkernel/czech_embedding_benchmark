@@ -2,22 +2,21 @@
 
 from collections.abc import Sequence
 from dataclasses import dataclass, field
+from datasets import Dataset
 from pathlib import Path
 from typing import Any
 
-
 @dataclass
 class CzechTextDocumentDatasetLoader:
-    """Parse Czech Text Document Corpus text files into Hugging Face datasets."""
+    """Parse Czech Text Document Corpus text files into a Hugging Face dataset."""
 
     dataset_dir: str | Path = Path("data/czech_text_document_corpus_v20")
-    split: str = "train"
+    dataset: Dataset | None = field(default=None, init=False, repr=False)
     encoding: str = "utf-8"
-    dataset: Any | None = field(default=None, init=False, repr=False)
+    split: str = "train"
 
-    def load(self, limit: int | None = None) -> Any:
+    def load(self, limit: int | None = None) -> Dataset:
         """Parse source files and store them as a Hugging Face dataset."""
-        from datasets import Dataset
         records = self._parse_txt_files(limit=limit)
         self.dataset = Dataset.from_list(records)
         return self.dataset
@@ -46,7 +45,7 @@ class CzechTextDocumentDatasetLoader:
 
     def _iter_txt_files(self) -> Sequence[Path]:
         """Yield paths to all `.txt` files in the dataset directory."""
-        dataset_path = Path(self.dataset_dir)
+        dataset_path = Path(self.dataset_dir) / self.split
         if not dataset_path.exists():
             raise FileNotFoundError(f"Dataset directory not found: {dataset_path}")
         if not dataset_path.is_dir():
