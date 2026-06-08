@@ -1,3 +1,5 @@
+"""Create synthetic dataset for Czech Text Document Corpus, since it lacks qrels."""
+
 from dataloaders.czech_text_document import CzechTextDocumentDatasetLoader
 from deepeval.models import DeepEvalBaseEmbeddingModel, DeepEvalBaseLLM
 from deepeval.synthesizer import Synthesizer
