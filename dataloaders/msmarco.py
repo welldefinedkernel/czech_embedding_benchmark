@@ -1,10 +1,10 @@
+"""Loader for the MS Marco Corpus `.jsonl` files."""
 import json
+
 from dataclasses import dataclass, field
+from datasets import Dataset
 from pathlib import Path
 from typing import Any
-
-from datasets import Dataset
-
 
 @dataclass
 class MSMarcoDatasetLoader:
@@ -24,6 +24,9 @@ class MSMarcoDatasetLoader:
     def _parse_json_file(self, limit: int | None = None) -> list[dict[str, Any]]:
         """Parse source JSONL file into a list of records."""
         dataset_path = Path(self.dataset_dir) / f"{self.split}.jsonl"
+        if not dataset_path.exists():
+            raise FileNotFoundError(f"Dataset file not found: {dataset_path}")
+        
         records: list[dict[str, Any]] = []
 
         with dataset_path.open(encoding=self.encoding) as f:
@@ -36,7 +39,7 @@ class MSMarcoDatasetLoader:
                     continue
 
                 records.append(json.loads(line))
-                
+
         return records
 
 if __name__ == "__main__":
