@@ -1,7 +1,7 @@
 [project]
 name = "czech-embedding-benchmark"
-version = "0.1.0"
-description = "Add your description here"
+version = "0.3.0"
+description = "Evaluation and comparison of multilingual and Czech-specific embedding models"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
