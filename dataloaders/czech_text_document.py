@@ -6,6 +6,7 @@ from datasets import Dataset
 from pathlib import Path
 from typing import Any
 
+
 @dataclass
 class CzechTextDocumentDatasetLoader:
     """Parse Czech Text Document Corpus text files into a Hugging Face dataset."""
@@ -20,7 +21,7 @@ class CzechTextDocumentDatasetLoader:
         records = self._parse_txt_files(limit=limit)
         self.dataset = Dataset.from_list(records)
         return self.dataset
-    
+
     def _parse_txt_files(self, limit: int | None = None) -> list[dict[str, Any]]:
         """Parse source `.txt` files into a list of records."""
         records: list[dict[str, Any]] = []
@@ -57,7 +58,8 @@ class CzechTextDocumentDatasetLoader:
         text = text.strip()
         text = " ".join(text.split())
         return text
-    
+
+
 if __name__ == "__main__":
     loader = CzechTextDocumentDatasetLoader()
     dataset = loader.load(limit=10)

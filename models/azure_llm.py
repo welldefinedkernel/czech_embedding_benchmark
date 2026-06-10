@@ -6,13 +6,14 @@ from pydantic import SecretStr
 
 load_dotenv()
 
+
 class AzureLLM(DeepEvalBaseLLM):
     def __init__(self):
-        self.deployment_name = os.getenv("AZURE_LLM_NAME", "") 
+        self.deployment_name = os.getenv("AZURE_LLM_NAME", "")
         self.endpoint = os.getenv("AZURE_LLM_ENDPOINT")
         self.api_key = SecretStr(os.getenv("AZURE_LLM_KEY", ""))
         self.api_version = os.getenv("AZURE_API_VERSION", "2024-06-01")
-        
+
         self.model = self.load_model()
         super().__init__(model_name=self.deployment_name)
 

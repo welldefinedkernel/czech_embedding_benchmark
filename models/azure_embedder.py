@@ -7,6 +7,7 @@ from pydantic import SecretStr
 
 load_dotenv()
 
+
 class AzureEmbedder(DeepEvalBaseEmbeddingModel):
     def __init__(self):
         model_name = os.getenv("AZURE_EMBEDDING_NAME", "")
