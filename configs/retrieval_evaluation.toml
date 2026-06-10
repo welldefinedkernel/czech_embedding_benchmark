@@ -1,0 +1,34 @@
+[run]
+output_dir = "results/mteb"
+seed = 42
+batch_size = 32
+num_proc = 1
+
+[datasets.msmarco]
+enabled = false
+input_path = "data/ms_marco"
+split = "validation"
+query_field = "query_cz"
+passage_text_field = "passage_text_cz"
+limit = 5
+
+[datasets.ctdc_synthetic]
+enabled = false
+
+[mteb.multilingual]
+enabled = true
+exclude_tasks = ["BelebeleRetrieval"]
+
+[[models]]
+name = "intfloat/multilingual-e5-small"
+query_instruction = "query: "       # TODO: automatic resolution of query using model config
+document_instruction = "passage: "  # TODO: ditto
+normalize_embeddings = true
+use_safetensors = true
+
+# [[models]]
+# name = "intfloat/multilingual-e5-large"
+# query_instruction = "query: "       
+# document_instruction = "passage: "  
+# normalize_embeddings = true
+# use_safetensors = true

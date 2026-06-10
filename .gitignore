@@ -22,3 +22,6 @@ data/synthetic/
 
 # Evaluation results
 results/
+
+# Local docs files
+docs/
