@@ -17,18 +17,15 @@ enabled = false
 
 [mteb.multilingual]
 enabled = true
-exclude_tasks = ["BelebeleRetrieval"]
+# include_tasks = ["AILAStatutes", "ArguAna"]
+include_tasks = []
 
 [[models]]
 name = "intfloat/multilingual-e5-small"
-query_instruction = "query: "       # TODO: automatic resolution of query using model config
-document_instruction = "passage: "  # TODO: ditto
 normalize_embeddings = true
 use_safetensors = true
 
 # [[models]]
 # name = "intfloat/multilingual-e5-large"
-# query_instruction = "query: "       
-# document_instruction = "passage: "  
 # normalize_embeddings = true
 # use_safetensors = true
