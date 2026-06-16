@@ -35,8 +35,6 @@ class CTDCSyntheticConfig:  # CTDC Synthetic dataset settings
 @dataclass
 class ModelConfig:  # Model settings for evaluation
     name: str
-    query_instruction: str
-    document_instruction: str
     normalize_embeddings: bool
     use_safetensors: bool
 
@@ -44,7 +42,7 @@ class ModelConfig:  # Model settings for evaluation
 @dataclass
 class MultilingualMTEBConfig:  # Official MTEB multilingual benchmark settings
     enabled: bool
-    exclude_tasks: tuple[str, ...]
+    include_tasks: tuple[str, ...]
 
 
 @dataclass
@@ -98,7 +96,7 @@ def load_config(config_path: str | Path) -> EvaluationConfig:
         else None,
         multilingual_mteb=MultilingualMTEBConfig(
             enabled=multilingual_mteb["enabled"],
-            exclude_tasks=tuple(multilingual_mteb["exclude_tasks"]),
+            include_tasks=tuple(multilingual_mteb["include_tasks"]),
         )
         if multilingual_mteb["enabled"]
         else None,
