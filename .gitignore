@@ -17,8 +17,9 @@ data/synthetic/
 # Environment variables
 .env
 
-# DeepEval
+# Tool-generated files
 .deepeval/
+.ruff_cache/
 
 # Evaluation results
 results/
