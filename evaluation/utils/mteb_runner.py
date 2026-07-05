@@ -2,15 +2,12 @@
 
 import json
 import mteb
-import os
 
 from evaluation.config import EvaluationConfig
 from mteb.benchmarks.benchmark import Benchmark
 from mteb.results import BenchmarkResults, ModelResult
 from pathlib import Path
 from typing import Any, Sequence, cast
-
-os.environ.setdefault("HF_HUB_DISABLE_XET", "1")
 
 
 def run_mteb_retrieval(
@@ -39,7 +36,7 @@ def run_mteb_retrieval(
                     "batch_size": config.run.batch_size,
                 },
             ),
-            overwrite_strategy="only-missing",
+            overwrite_strategy="always",
             prediction_folder=str(output_folder),
             raise_error=True,
             show_progress_bar=True,
@@ -104,6 +101,7 @@ def _select_retrieval_tasks(
         task
         for task in benchmark.tasks
         if task.metadata.type == "Retrieval"
+        and task.metadata.name != "BelebeleRetrieval"
         and (task.metadata.name in included_tasks if included_tasks else True)
     ]
 
