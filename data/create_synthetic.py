@@ -7,7 +7,9 @@ from pathlib import Path
 from typing import Any, Literal
 
 LLMModelArg = str | DeepEvalBaseLLM | type[DeepEvalBaseLLM] | None
-EmbeddingModelArg = str | DeepEvalBaseEmbeddingModel | type[DeepEvalBaseEmbeddingModel] | None
+EmbeddingModelArg = (
+    str | DeepEvalBaseEmbeddingModel | type[DeepEvalBaseEmbeddingModel] | None
+)
 OutputFileType = Literal["json", "csv", "jsonl"]
 
 

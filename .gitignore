@@ -17,5 +17,19 @@ data/synthetic/
 # Environment variables
 .env
 
-# DeepEval
+# Tool-generated files
 .deepeval/
+.ruff_cache/
+
+# Evaluation results
+results/
+
+# Local docs files
+docs/
+
+# uv executable
+uv/
+
+# Configs
+configs/*
+!configs/retrieval_evaluation.toml.example

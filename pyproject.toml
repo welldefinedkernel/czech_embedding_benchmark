@@ -1,7 +1,7 @@
 [project]
 name = "czech-embedding-benchmark"
-version = "0.1.0"
-description = "Add your description here"
+version = "0.3.0"
+description = "Evaluation and comparison of multilingual and Czech-specific embedding models"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
@@ -11,10 +11,20 @@ dependencies = [
     "deepeval>=4.0.5",
     "dotenv>=0.9.9",
     "langchain-openai>=1.2.2",
+    "mteb>=2.12.30",
     "pydantic>=2.13.4",
+    "sentence-transformers>=5.5.1",
+    "ruff>=0.15.16",
 ]
 
 [dependency-groups]
 dev = [
     "commitizen>=4.13.10",
 ]
+
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["dataloaders*", "evaluation*", "models*"]
