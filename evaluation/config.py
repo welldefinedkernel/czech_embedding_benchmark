@@ -13,6 +13,7 @@ class RunConfig:  # Evaluation run settings
     seed: int
     batch_size: int
     num_proc: int
+    device: str
 
 
 @dataclass
@@ -21,7 +22,7 @@ class MSMarcoConfig:  # MSMarco dataset settings
     split: str
     query_field: str
     passage_text_field: str
-    limit: int
+    limit: int | None
 
 
 @dataclass
@@ -29,7 +30,7 @@ class CTDCSyntheticConfig:  # CTDC Synthetic dataset settings
     input_path: Path
     query_field: str
     passage_text_field: str
-    limit: int
+    limit: int | None
 
 
 @dataclass
@@ -76,13 +77,14 @@ def load_config(config_path: str | Path) -> EvaluationConfig:
             seed=run.get("seed", 42),
             batch_size=run.get("batch_size", 32),
             num_proc=run.get("num_proc", 1),
+            device=run.get("device", "cuda")
         ),
         msmarco=MSMarcoConfig(
             input_path=_resolve_path(msmarco["input_path"], root),
             split=msmarco["split"],
             query_field=msmarco["query_field"],
             passage_text_field=msmarco["passage_text_field"],
-            limit=msmarco["limit"],
+            limit=msmarco.get("limit"),
         )
         if msmarco["enabled"]
         else None,
@@ -90,7 +92,7 @@ def load_config(config_path: str | Path) -> EvaluationConfig:
             input_path=_resolve_path(ctdc_synthetic["input_path"], root),
             query_field=ctdc_synthetic["query_field"],
             passage_text_field=ctdc_synthetic["passage_text_field"],
-            limit=ctdc_synthetic["limit"],
+            limit=ctdc_synthetic.get("limit"),
         )
         if ctdc_synthetic["enabled"]
         else None,
