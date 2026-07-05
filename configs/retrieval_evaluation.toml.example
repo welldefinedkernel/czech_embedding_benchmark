@@ -1,0 +1,38 @@
+# Example-only template for evaluation/evaluate.py
+# Replace placeholder values (<...>) before using.
+
+[run]
+# output_dir = "<relative-or-absolute-output-path>"
+# seed = <int>
+# batch_size = <int>
+# num_proc = <int>
+
+[datasets.msmarco]
+# enabled = <true|false>
+# input_path = "<path-to-msmarco-data>"
+# split = "<split-name>"
+# query_field = "<query-field-name>"
+# passage_text_field = "<passage-text-field-name>"
+# limit = <int>
+
+[datasets.ctdc_synthetic]
+# enabled = <true|false>
+# input_path = "<path-to-ctdc-synthetic-jsonl>"
+# query_field = "<query-field-name>"
+# passage_text_field = "<passage-text-field-name>"
+# limit = <int>
+
+[mteb.multilingual]
+# enabled = <true|false>
+# include_tasks = ["<TaskName1>", "<TaskName2>"]
+
+[[models]]
+# name = "<huggingface-model-id>"
+# normalize_embeddings = <true|false>
+# use_safetensors = <true|false>
+
+# Add more models by repeating [[models]] with the same keys.
+# [[models]]
+# name = "<another-huggingface-model-id>"
+# normalize_embeddings = <true|false>
+# use_safetensors = <true|false>
