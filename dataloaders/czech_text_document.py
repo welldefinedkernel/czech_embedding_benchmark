@@ -6,7 +6,6 @@ from datasets import Dataset
 from pathlib import Path
 from typing import Any
 
-
 @dataclass
 class CzechTextDocumentDatasetLoader:
     """Parse Czech Text Document Corpus text files into a Hugging Face dataset."""
