@@ -38,6 +38,7 @@ class ModelConfig:  # Model settings for evaluation
     name: str
     normalize_embeddings: bool
     use_safetensors: bool
+    trust_remote_code: bool
 
 
 @dataclass
