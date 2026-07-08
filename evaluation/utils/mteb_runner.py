@@ -88,7 +88,6 @@ def _select_retrieval_tasks(
         task.metadata.name
         for task in benchmark.tasks
         if task.metadata.type == "Retrieval"
-        and task.metadata.name != "BelebeleRetrieval"
     }
     missing_tasks = included_tasks - available_tasks
     if missing_tasks:
@@ -101,7 +100,6 @@ def _select_retrieval_tasks(
         task
         for task in benchmark.tasks
         if task.metadata.type == "Retrieval"
-        and task.metadata.name != "BelebeleRetrieval"
         and (task.metadata.name in included_tasks if included_tasks else True)
     ]
 
