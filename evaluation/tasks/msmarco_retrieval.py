@@ -12,13 +12,19 @@ class MSMarcoRetrievalTask(AbsTaskRetrieval):
         dataset={
             "path": "local",
             "revision": "main",
-        },  # Arbitrary, we are overriding dataset loading
+        },  # Arbitrary, we are overriding dataset loading.
         name="msmarco_cz_retrieval",
         description="MSMARCO Retrieval dataset translated to Czech",
         type="Retrieval",
         category="t2t",
         eval_langs=["ces-Latn"],
         main_score="mrr_at_10",
+        # Same instruction as the official MSMARCO task. Instruction-tuned
+        # models (e.g. Harrier) read this, without it mteb falls back to a
+        # registry lookup by task name, which fails for custom tasks.
+        prompt={
+            "query": "Given a web search query, retrieve relevant passages that answer the query"
+        },
     )
 
     def __init__(
