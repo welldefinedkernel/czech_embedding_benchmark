@@ -36,3 +36,4 @@
 # name = "<another-huggingface-model-id>"
 # normalize_embeddings = <true|false>
 # use_safetensors = <true|false>
+# trust_remote_code = <true|false>

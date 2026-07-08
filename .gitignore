@@ -33,3 +33,6 @@ uv/
 # Configs
 configs/*
 !configs/retrieval_evaluation.toml.example
+
+# Batch logs
+jobs/logs/*

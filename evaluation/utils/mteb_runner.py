@@ -25,6 +25,7 @@ def run_mteb_retrieval(
             config.run.output_dir / dataset_name / model_config.name.replace("/", "__")
         )
         output_folder.mkdir(parents=True, exist_ok=True)
+        _clear_stale_prediction_files(output_folder)
 
         result = mteb.evaluate(
             model,
@@ -88,7 +89,6 @@ def _select_retrieval_tasks(
         task.metadata.name
         for task in benchmark.tasks
         if task.metadata.type == "Retrieval"
-        and task.metadata.name != "BelebeleRetrieval"
     }
     missing_tasks = included_tasks - available_tasks
     if missing_tasks:
@@ -101,7 +101,6 @@ def _select_retrieval_tasks(
         task
         for task in benchmark.tasks
         if task.metadata.type == "Retrieval"
-        and task.metadata.name != "BelebeleRetrieval"
         and (task.metadata.name in included_tasks if included_tasks else True)
     ]
 
@@ -117,6 +116,19 @@ def _write_benchmark_scores(
         json.dumps(benchmark_scores, ensure_ascii=False, indent=2),
         encoding="utf-8",
     )
+
+
+def _clear_stale_prediction_files(output_folder: Path) -> None:
+    """Remove leftover *_predictions.json files before a fresh run.
+
+    mteb always merges new predictions into any existing predictions file on
+    disk (regardless of overwrite_strategy). Leftover files from a previous
+    killed/crashed run can be truncated/corrupted or huge, which crashes or
+    slows down the next run when it tries to load them. Since we run with
+    overwrite_strategy="always", we want a clean slate every time.
+    """
+    for prediction_file in output_folder.glob("*_predictions.json"):
+        prediction_file.unlink()
 
 
 def _indent_prediction_files(output_folder: Path) -> None:
