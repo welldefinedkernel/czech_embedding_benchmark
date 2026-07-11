@@ -39,6 +39,8 @@ class ModelConfig:  # Model settings for evaluation
     normalize_embeddings: bool
     use_safetensors: bool
     trust_remote_code: bool
+    query_prompt: str | None = None
+    document_prompt: str | None = None
 
 
 @dataclass

@@ -1,8 +1,8 @@
 #!/bin/bash
 #PBS -N czech_embed_eval
 #PBS -q gpu
-#PBS -l select=1:ncpus=8:ngpus=1:mem=64gb:scratch_local=50gb
-#PBS -l walltime=24:00:00
+#PBS -l select=1:ncpus=8:ngpus=1:gpu_mem=24gb:mem=64gb:scratch_local=50gb
+#PBS -l walltime=48:00:00
 #PBS -j oe
 #PBS -m abe
 #PBS -M roman.tomchik953@student.cuni.cz
@@ -38,6 +38,7 @@ fi
 trap 'clean_scratch' TERM EXIT
 export TMPDIR="$SCRATCHDIR/tmp"
 export HF_HOME="$SCRATCHDIR/hf"
+export PYTORCH_CUDA_ALLOC_CONF="expandable_segments:True"
 mkdir -p "$TMPDIR" "$HF_HOME"
 
 # --- Environment ---------------------------------------------------------
