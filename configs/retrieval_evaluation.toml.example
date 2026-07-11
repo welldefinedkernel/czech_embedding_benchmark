@@ -37,3 +37,13 @@
 # normalize_embeddings = <true|false>
 # use_safetensors = <true|false>
 # trust_remote_code = <true|false>
+
+# Ollama models: prefix the Ollama model tag with "ollama/".
+# Requires a running Ollama server (OLLAMA_HOST, default http://localhost:11434).
+# [[models]]
+# name = "ollama/<ollama-model-tag>"
+# normalize_embeddings = <true|false>
+# use_safetensors = false
+# trust_remote_code = false
+# query_prompt = "<optional-query-prefix>"
+# document_prompt = "<optional-document-prefix>"
