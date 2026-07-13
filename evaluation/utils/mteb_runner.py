@@ -109,11 +109,27 @@ def _select_retrieval_tasks(
     ]
 
 
+def _register_local_tasks(tasks: Sequence[Any]) -> None:
+    """Make locally-defined tasks resolvable by name in mteb's task registry.
+
+    `Benchmark.get_score` looks up each task result's task via
+    `mteb.get_tasks.get_task(task_name)`, which only knows about tasks
+    defined inside the `mteb.tasks` package. Tasks defined in this repo
+    (e.g. MSMarcoRetrievalTask) are missing from that registry, so we add
+    them here, without touching entries mteb already knows about.
+    """
+    from mteb.get_tasks import _TASKS_REGISTRY
+
+    for task in tasks:
+        _TASKS_REGISTRY.setdefault(task.metadata.name, (lambda t=task: t))
+
+
 def _write_benchmark_scores(
     benchmark: Benchmark,
     result: ModelResult,
     output_folder: Path,
 ) -> None:
+    _register_local_tasks(benchmark.tasks)
     benchmark_results = BenchmarkResults(model_results=[result], benchmark=benchmark)
     benchmark_scores = benchmark.get_score(benchmark_results)
     (output_folder / "benchmark_scores.json").write_text(
