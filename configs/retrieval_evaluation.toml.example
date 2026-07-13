@@ -6,20 +6,18 @@
 # seed = <int>
 # batch_size = <int>
 # num_proc = <int>
+# resume_from_partial = <true|false>
+# write_predictions = <true|false>
 
 [datasets.msmarco]
 # enabled = <true|false>
 # input_path = "<path-to-msmarco-data>"
 # split = "<split-name>"
-# query_field = "<query-field-name>"
-# passage_text_field = "<passage-text-field-name>"
 # limit = <int>
 
 [datasets.ctdc_synthetic]
 # enabled = <true|false>
 # input_path = "<path-to-ctdc-synthetic-jsonl>"
-# query_field = "<query-field-name>"
-# passage_text_field = "<passage-text-field-name>"
 # limit = <int>
 
 [mteb.multilingual]

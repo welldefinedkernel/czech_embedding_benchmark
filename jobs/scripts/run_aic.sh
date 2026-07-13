@@ -2,7 +2,7 @@
 #SBATCH -J czech_embed_eval
 #SBATCH -p gpu
 #SBATCH -G 1
-#SBATCH --constraint=gpuram24G
+#SBATCH --constraint=gpu_cc8.6
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=64G
 #SBATCH -t 2-00:00:00
@@ -26,6 +26,8 @@
 
 set -euo pipefail
 
+nvidia-smi
+
 REPO="/home/tomchikr/czech_embedding_benchmark"
 LOG_DIR="$REPO/jobs/logs"
 
@@ -48,13 +50,16 @@ if [[ ! -f "$CONFIG_PATH" ]]; then
     exit 1
 fi
 
-# --- Node-local scratch for caches/temp (results stay in the repo) -------
-SCRATCH="/tmp/${USER}/${SLURM_JOB_ID:-local}"
-trap 'rm -rf "$SCRATCH"' TERM EXIT
-export TMPDIR="$SCRATCH/tmp"
-export HF_HOME="$SCRATCH/hf"
+# --- Repo-local cache/temp (uses project storage quota) -------------------
+CACHE_ROOT="$REPO/.cache"
+export TMPDIR="$CACHE_ROOT/tmp"
+export HF_HOME="$CACHE_ROOT/hf"
+export HF_DATASETS_CACHE="$CACHE_ROOT/hf/datasets"
+export HUGGINGFACE_HUB_CACHE="$CACHE_ROOT/hf/hub"
+export TRANSFORMERS_CACHE="$CACHE_ROOT/hf/transformers"
+export XDG_CACHE_HOME="$CACHE_ROOT"
 export PYTORCH_CUDA_ALLOC_CONF="expandable_segments:True"
-mkdir -p "$TMPDIR" "$HF_HOME"
+mkdir -p "$TMPDIR" "$HF_HOME" "$HF_DATASETS_CACHE" "$HUGGINGFACE_HUB_CACHE" "$TRANSFORMERS_CACHE"
 
 # --- Environment ---------------------------------------------------------
 cd "$REPO"

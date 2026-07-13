@@ -36,3 +36,6 @@ configs/*
 
 # Batch logs
 jobs/logs/*
+
+# Tmp files
+.cache/

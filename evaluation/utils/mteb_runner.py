@@ -25,7 +25,8 @@ def run_mteb_retrieval(
             config.run.output_dir / dataset_name / model_config.name.replace("/", "__")
         )
         output_folder.mkdir(parents=True, exist_ok=True)
-        _clear_stale_prediction_files(output_folder)
+        if config.run.write_predictions and not config.run.resume_from_partial:
+            _clear_stale_prediction_files(output_folder)
 
         result = mteb.evaluate(
             model,
@@ -37,8 +38,10 @@ def run_mteb_retrieval(
                     "batch_size": config.run.batch_size,
                 },
             ),
-            overwrite_strategy="always",
-            prediction_folder=str(output_folder),
+            overwrite_strategy=(
+                "only-missing" if config.run.resume_from_partial else "always"
+            ),
+            prediction_folder=(str(output_folder) if config.run.write_predictions else None),
             raise_error=True,
             show_progress_bar=True,
             num_proc=config.run.num_proc,
@@ -49,7 +52,8 @@ def run_mteb_retrieval(
         )
         if benchmark is not None:
             _write_benchmark_scores(benchmark, result, output_folder)
-        _indent_prediction_files(output_folder)
+        if config.run.write_predictions:
+            _indent_prediction_files(output_folder)
         results[model_config.name] = result
 
     return results
@@ -105,11 +109,27 @@ def _select_retrieval_tasks(
     ]
 
 
+def _register_local_tasks(tasks: Sequence[Any]) -> None:
+    """Make locally-defined tasks resolvable by name in mteb's task registry.
+
+    `Benchmark.get_score` looks up each task result's task via
+    `mteb.get_tasks.get_task(task_name)`, which only knows about tasks
+    defined inside the `mteb.tasks` package. Tasks defined in this repo
+    (e.g. MSMarcoRetrievalTask) are missing from that registry, so we add
+    them here, without touching entries mteb already knows about.
+    """
+    from mteb.get_tasks import _TASKS_REGISTRY
+
+    for task in tasks:
+        _TASKS_REGISTRY.setdefault(task.metadata.name, (lambda t=task: t))
+
+
 def _write_benchmark_scores(
     benchmark: Benchmark,
     result: ModelResult,
     output_folder: Path,
 ) -> None:
+    _register_local_tasks(benchmark.tasks)
     benchmark_results = BenchmarkResults(model_results=[result], benchmark=benchmark)
     benchmark_scores = benchmark.get_score(benchmark_results)
     (output_folder / "benchmark_scores.json").write_text(

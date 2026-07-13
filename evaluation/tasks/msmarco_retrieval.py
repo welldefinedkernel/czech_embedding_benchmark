@@ -6,37 +6,68 @@ from mteb.abstasks.retrieval import AbsTaskRetrieval
 from mteb.abstasks.task_metadata import TaskMetadata
 from typing import Any, cast
 
+# Language codes supported by the translated MS MARCO dataset, mapped to the
+# dataset field holding their text and their MTEB eval_langs code.
+_LANGUAGE_FIELDS: dict[str, dict[str, str]] = {
+    "en": {"query_field": "query", "passage_field": "passage_text", "eval_lang": "eng-Latn"},
+    "cz": {"query_field": "query_cz", "passage_field": "passage_text_cz", "eval_lang": "ces-Latn"},
+}
+
+# Query language / passage language combinations to evaluate.
+MSMARCO_LANGUAGE_PAIRS: tuple[tuple[str, str], ...] = (
+    ("cz", "cz"),
+    ("cz", "en"),
+    ("en", "cz"),
+    ("en", "en"),
+)
+
 
 class MSMarcoRetrievalTask(AbsTaskRetrieval):
-    metadata = TaskMetadata(
-        dataset={
-            "path": "local",
-            "revision": "main",
-        },  # Arbitrary, we are overriding dataset loading.
-        name="msmarco_cz_retrieval",
-        description="MSMARCO Retrieval dataset translated to Czech",
-        type="Retrieval",
-        category="t2t",
-        eval_langs=["ces-Latn"],
-        main_score="mrr_at_10",
-        # Same instruction as the official MSMARCO task. Instruction-tuned
-        # models (e.g. Harrier) read this, without it mteb falls back to a
-        # registry lookup by task name, which fails for custom tasks.
-        prompt={
-            "query": "Given a web search query, retrieve relevant passages that answer the query"
-        },
-    )
-
     def __init__(
-        self, dataset_loader: Dataset, dataset_config: MSMarcoConfig, **kwargs
+        self,
+        dataset_loader: Dataset,
+        dataset_config: MSMarcoConfig,
+        query_lang: str,
+        passage_lang: str,
+        **kwargs,
     ):
         self.dataset_loader = dataset_loader
         self.dataset_config = dataset_config
+        self.query_lang = query_lang
+        self.passage_lang = passage_lang
+
+        eval_langs = sorted(
+            {_LANGUAGE_FIELDS[query_lang]["eval_lang"], _LANGUAGE_FIELDS[passage_lang]["eval_lang"]}
+        )
+        self.metadata = TaskMetadata(
+            dataset={
+                "path": "local",
+                "revision": "main",
+            },  # Arbitrary, we are overriding dataset loading.
+            name=f"msmarco_{query_lang}-{passage_lang}_retrieval",
+            description=(
+                f"MSMARCO Retrieval dataset with {query_lang} queries and "
+                f"{passage_lang} passages"
+            ),
+            type="Retrieval",
+            category="t2t",
+            eval_langs=eval_langs,
+            main_score="mrr_at_10",
+            # Same instruction as the official MSMARCO task. Instruction-tuned
+            # models (e.g. Harrier) read this, without it mteb falls back to a
+            # registry lookup by task name, which fails for custom tasks.
+            prompt={
+                "query": "Given a web search query, retrieve relevant passages that answer the query"
+            },
+        )
         super().__init__(**kwargs)
 
     def load_data(self, num_proc: int | None = None, **kwargs) -> None:
         if self.data_loaded:
             return
+
+        query_field = _LANGUAGE_FIELDS[self.query_lang]["query_field"]
+        passage_field = _LANGUAGE_FIELDS[self.passage_lang]["passage_field"]
 
         split = "test"  # We are only testing models, so each split is a test
         queries: dict[str, str] = {}
@@ -46,9 +77,9 @@ class MSMarcoRetrievalTask(AbsTaskRetrieval):
         for raw_record in self.dataset_loader:
             record = cast(dict[str, Any], raw_record)
             query_id = str(record["query_id"])
-            query = str(record[self.dataset_config.query_field]).strip()
+            query = str(record[query_field]).strip()
             passages = record["passages"]
-            passage_texts = passages[self.dataset_config.passage_text_field]
+            passage_texts = passages[passage_field]
             selected = passages["is_selected"]
 
             if not query:
