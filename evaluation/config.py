@@ -14,14 +14,14 @@ class RunConfig:  # Evaluation run settings
     batch_size: int
     num_proc: int
     device: str
+    resume_from_partial: bool
+    write_predictions: bool
 
 
 @dataclass
 class MSMarcoConfig:  # MSMarco dataset settings
     input_path: Path
     split: str
-    query_field: str
-    passage_text_field: str
     limit: int | None
 
 
@@ -80,13 +80,13 @@ def load_config(config_path: str | Path) -> EvaluationConfig:
             seed=run.get("seed", 42),
             batch_size=run.get("batch_size", 32),
             num_proc=run.get("num_proc", 1),
-            device=run.get("device", "cuda")
+            device=run.get("device", "cuda"),
+            resume_from_partial=run.get("resume_from_partial", False),
+            write_predictions=run.get("write_predictions", True),
         ),
         msmarco=MSMarcoConfig(
             input_path=_resolve_path(msmarco["input_path"], root),
             split=msmarco["split"],
-            query_field=msmarco["query_field"],
-            passage_text_field=msmarco["passage_text_field"],
             limit=msmarco.get("limit"),
         )
         if msmarco["enabled"]

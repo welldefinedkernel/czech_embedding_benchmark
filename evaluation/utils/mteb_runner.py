@@ -25,7 +25,8 @@ def run_mteb_retrieval(
             config.run.output_dir / dataset_name / model_config.name.replace("/", "__")
         )
         output_folder.mkdir(parents=True, exist_ok=True)
-        _clear_stale_prediction_files(output_folder)
+        if config.run.write_predictions and not config.run.resume_from_partial:
+            _clear_stale_prediction_files(output_folder)
 
         result = mteb.evaluate(
             model,
@@ -37,8 +38,10 @@ def run_mteb_retrieval(
                     "batch_size": config.run.batch_size,
                 },
             ),
-            overwrite_strategy="always",
-            prediction_folder=str(output_folder),
+            overwrite_strategy=(
+                "only-missing" if config.run.resume_from_partial else "always"
+            ),
+            prediction_folder=(str(output_folder) if config.run.write_predictions else None),
             raise_error=True,
             show_progress_bar=True,
             num_proc=config.run.num_proc,
@@ -49,7 +52,8 @@ def run_mteb_retrieval(
         )
         if benchmark is not None:
             _write_benchmark_scores(benchmark, result, output_folder)
-        _indent_prediction_files(output_folder)
+        if config.run.write_predictions:
+            _indent_prediction_files(output_folder)
         results[model_config.name] = result
 
     return results
