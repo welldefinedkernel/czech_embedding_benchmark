@@ -87,11 +87,13 @@ class MSMarcoRetrievalTask(AbsTaskRetrieval):
             passage_texts = passages[passage_field]
             selected = passages["is_selected"]
 
-            if not query:
-                continue
-
-            queries[query_id] = query
-            relevant_docs[query_id] = {}
+            # An empty query (e.g. missing translation) excludes the query from
+            # evaluation, but its passages stay in the corpus so that all
+            # language-pair tasks share an identical corpus.
+            has_query = bool(query)
+            if has_query:
+                queries[query_id] = query
+                relevant_docs[query_id] = {}
 
             for passage_index, passage_text in enumerate(passage_texts):
                 document_id = f"{query_id}:{passage_index}"
@@ -100,7 +102,7 @@ class MSMarcoRetrievalTask(AbsTaskRetrieval):
                     "text": str(passage_text).strip(),
                 }
 
-                if selected[passage_index]:
+                if has_query and selected[passage_index]:
                     relevant_docs[query_id][document_id] = 1
 
         self.queries = {split: queries}
