@@ -21,26 +21,20 @@ _LANGUAGE_FIELDS: dict[str, dict[str, str]] = {
     },
 }
 
-# Query language / passage language combinations to evaluate.
-MSMARCO_LANGUAGE_PAIRS: tuple[tuple[str, str], ...] = (
-    ("cz", "cz"),
-    ("cz", "en"),
-    ("en", "cz"),
-    ("en", "en"),
-)
-
 
 class MSMarcoRetrievalTask(AbsTaskRetrieval):
     def __init__(
         self,
         dataset_loader: Dataset,
         dataset_config: MSMarcoConfig,
+        dataset_split: str,
         query_lang: str,
         passage_lang: str,
         **kwargs,
     ):
         self.dataset_loader = dataset_loader
         self.dataset_config = dataset_config
+        self.dataset_split = dataset_split
         self.query_lang = query_lang
         self.passage_lang = passage_lang
 
@@ -55,10 +49,10 @@ class MSMarcoRetrievalTask(AbsTaskRetrieval):
                 "path": "local",
                 "revision": "main",
             },  # Arbitrary, we are overriding dataset loading.
-            name=f"msmarco_{query_lang}-{passage_lang}_retrieval",
+            name=f"msmarco_{dataset_split}_{query_lang}-{passage_lang}_retrieval",
             description=(
-                f"MSMARCO Retrieval dataset with {query_lang} queries and "
-                f"{passage_lang} passages"
+                f"MSMARCO Retrieval dataset ({dataset_split} split) with "
+                f"{query_lang} queries and {passage_lang} passages"
             ),
             type="Retrieval",
             category="t2t",

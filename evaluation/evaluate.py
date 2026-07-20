@@ -6,10 +6,7 @@ import os
 from config import load_config
 from dotenv import load_dotenv
 from dataloaders.msmarco import MSMarcoDatasetLoader
-from evaluation.tasks.msmarco_retrieval import (
-    MSMARCO_LANGUAGE_PAIRS,
-    MSMarcoRetrievalTask,
-)
+from evaluation.tasks.msmarco_retrieval import MSMarcoRetrievalTask
 from evaluation.utils.model_factory import build_model
 from evaluation.utils.mteb_runner import (
     run_mteb_multilingual_retrieval,
@@ -34,24 +31,26 @@ def main(args):
 
     # MS Marco evaluation
     if config.msmarco:
-        # Dataset loading
-        loader = MSMarcoDatasetLoader(
-            dataset_dir=config.msmarco.input_path,
-            split=config.msmarco.split,
-        )
-        dataset = loader.load(limit=config.msmarco.limit)
-        print(f"Loaded MS MARCO dataset with {len(dataset)} records.")
-
-        # Task definition: one task per query/passage language pair
-        tasks = [
-            MSMarcoRetrievalTask(
-                dataset_loader=dataset,
-                dataset_config=config.msmarco,
-                query_lang=query_lang,
-                passage_lang=passage_lang,
+        # Task definition: one task per (split, query/passage language pair)
+        tasks = []
+        for dataset_split in config.msmarco.splits:
+            loader = MSMarcoDatasetLoader(
+                dataset_dir=config.msmarco.input_path,
+                split=dataset_split,
             )
-            for query_lang, passage_lang in MSMARCO_LANGUAGE_PAIRS
-        ]
+            dataset = loader.load(limit=config.msmarco.limit)
+            print(f"Loaded MS MARCO '{dataset_split}' split with {len(dataset)} records.")
+
+            for query_lang, passage_lang in config.msmarco.language_pairs:
+                tasks.append(
+                    MSMarcoRetrievalTask(
+                        dataset_loader=dataset,
+                        dataset_config=config.msmarco,
+                        dataset_split=dataset_split,
+                        query_lang=query_lang,
+                        passage_lang=passage_lang,
+                    )
+                )
         benchmark = Benchmark(name="MSMarco (cz/en)", tasks=tasks)
 
         run_mteb_retrieval(

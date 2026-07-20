@@ -12,7 +12,8 @@
 [datasets.msmarco]
 # enabled = <true|false>
 # input_path = "<path-to-msmarco-data>"
-# split = "<split-name>"
+# splits = ["<split-name-1>", "<split-name-2>"]
+# language_pairs = [["cz", "cz"], ["cz", "en"], ["en", "cz"], ["en", "en"]]  # optional, defaults to all four
 # limit = <int>
 
 [datasets.ctdc_synthetic]

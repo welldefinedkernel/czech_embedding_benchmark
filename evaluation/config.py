@@ -18,10 +18,20 @@ class RunConfig:  # Evaluation run settings
     write_predictions: bool
 
 
+# Query language / passage language combinations evaluated by default.
+DEFAULT_MSMARCO_LANGUAGE_PAIRS: tuple[tuple[str, str], ...] = (
+    ("cz", "cz"),
+    ("cz", "en"),
+    ("en", "cz"),
+    ("en", "en"),
+)
+
+
 @dataclass
 class MSMarcoConfig:  # MSMarco dataset settings
     input_path: Path
-    split: str
+    splits: tuple[str, ...]
+    language_pairs: tuple[tuple[str, str], ...]
     limit: int | None
 
 
@@ -86,7 +96,11 @@ def load_config(config_path: str | Path) -> EvaluationConfig:
         ),
         msmarco=MSMarcoConfig(
             input_path=_resolve_path(msmarco["input_path"], root),
-            split=msmarco["split"],
+            splits=tuple(msmarco["splits"]),
+            language_pairs=tuple(
+                tuple(pair)
+                for pair in msmarco.get("language_pairs", DEFAULT_MSMARCO_LANGUAGE_PAIRS)
+            ),
             limit=msmarco.get("limit"),
         )
         if msmarco["enabled"]
