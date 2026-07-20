@@ -9,8 +9,16 @@ from typing import Any, cast
 # Language codes supported by the translated MS MARCO dataset, mapped to the
 # dataset field holding their text and their MTEB eval_langs code.
 _LANGUAGE_FIELDS: dict[str, dict[str, str]] = {
-    "en": {"query_field": "query", "passage_field": "passage_text", "eval_lang": "eng-Latn"},
-    "cz": {"query_field": "query_cz", "passage_field": "passage_text_cz", "eval_lang": "ces-Latn"},
+    "en": {
+        "query_field": "query",
+        "passage_field": "passage_text",
+        "eval_lang": "eng-Latn",
+    },
+    "cz": {
+        "query_field": "query_cz",
+        "passage_field": "passage_text_cz",
+        "eval_lang": "ces-Latn",
+    },
 }
 
 # Query language / passage language combinations to evaluate.
@@ -37,7 +45,10 @@ class MSMarcoRetrievalTask(AbsTaskRetrieval):
         self.passage_lang = passage_lang
 
         eval_langs = sorted(
-            {_LANGUAGE_FIELDS[query_lang]["eval_lang"], _LANGUAGE_FIELDS[passage_lang]["eval_lang"]}
+            {
+                _LANGUAGE_FIELDS[query_lang]["eval_lang"],
+                _LANGUAGE_FIELDS[passage_lang]["eval_lang"],
+            }
         )
         self.metadata = TaskMetadata(
             dataset={

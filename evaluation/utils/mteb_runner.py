@@ -41,7 +41,9 @@ def run_mteb_retrieval(
             overwrite_strategy=(
                 "only-missing" if config.run.resume_from_partial else "always"
             ),
-            prediction_folder=(str(output_folder) if config.run.write_predictions else None),
+            prediction_folder=(
+                str(output_folder) if config.run.write_predictions else None
+            ),
             raise_error=True,
             show_progress_bar=True,
             num_proc=config.run.num_proc,

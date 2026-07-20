@@ -28,7 +28,9 @@ def main(args):
     run = config.run
 
     # Build models
-    models = [build_model(model_config, device=run.device) for model_config in config.models]
+    models = [
+        build_model(model_config, device=run.device) for model_config in config.models
+    ]
 
     # MS Marco evaluation
     if config.msmarco:

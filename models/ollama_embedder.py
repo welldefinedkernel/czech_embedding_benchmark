@@ -70,7 +70,5 @@ class OllamaEmbedder(AbsEncoder):
 
         array = np.asarray(embeddings, dtype=np.float32)
         if kwargs.get("normalize_embeddings"):
-            array /= np.clip(
-                np.linalg.norm(array, axis=1, keepdims=True), 1e-12, None
-            )
+            array /= np.clip(np.linalg.norm(array, axis=1, keepdims=True), 1e-12, None)
         return array
