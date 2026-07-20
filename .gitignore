@@ -39,3 +39,7 @@ jobs/logs/*
 
 # Tmp files
 .cache/
+
+# Memory symlinks
+.github/memory-czech_embedding_benchmark.md
+.github/memory-overview.md
