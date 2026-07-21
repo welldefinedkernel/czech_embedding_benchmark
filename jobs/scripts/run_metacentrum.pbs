@@ -1,7 +1,7 @@
 #!/bin/bash
 #PBS -N czech_embed_eval
 #PBS -q gpu
-#PBS -l select=1:ncpus=8:ngpus=1:gpu_mem=24gb:mem=64gb:scratch_local=50gb
+#PBS -l select=1:ncpus=16:ngpus=2:gpu_mem=40gb:mem=128gb:scratch_local=150gb
 #PBS -l walltime=48:00:00
 #PBS -j oe
 #PBS -m abe
@@ -11,7 +11,7 @@
 # Runs the retrieval evaluation for a single (small) model on MetaCentrum.
 #
 # Usage:
-#   qsub -v CONFIG=configs/per_model/intfloat_multilingual-e5-small.toml jobs/scripts/run.pbs
+#   qsub -v CONFIG=configs/per_model/intfloat_multilingual-e5-small.toml jobs/scripts/run_metacentrum.pbs
 #
 # CONFIG may be absolute or relative to the repository root. Results are
 # written by evaluation/evaluate.py to results/mteb/... exactly as usual.
@@ -19,6 +19,12 @@
 set -euo pipefail
 
 REPO="/storage/praha1/home/rtomchik/czech_embedding_benchmark"
+LOG_DIR="$REPO/jobs/logs"
+
+# Mirror all output to a shared logfile so progress is visible while the job runs.
+mkdir -p "$LOG_DIR"
+LOG_FILE="$LOG_DIR/${PBS_JOBID:-local}.log"
+exec > >(tee -a "$LOG_FILE") 2>&1
 
 # --- Validate input -----------------------------------------------------
 if [[ -z "${CONFIG:-}" ]]; then

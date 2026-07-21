@@ -37,6 +37,15 @@
 # use_safetensors = <true|false>
 # trust_remote_code = <true|false>
 
+# For models too large to fit on a single GPU, set device_map = "auto" to let
+# accelerate shard the model's backbone across all GPUs visible to the process.
+# [[models]]
+# name = "<large-huggingface-model-id>"
+# normalize_embeddings = <true|false>
+# use_safetensors = <true|false>
+# trust_remote_code = <true|false>
+# device_map = "auto"
+
 # Ollama models: prefix the Ollama model tag with "ollama/".
 # Requires a running Ollama server (OLLAMA_HOST, default http://localhost:11434).
 # [[models]]

@@ -27,8 +27,13 @@ def build_model(config: ModelConfig, device: str) -> Any:
         )
 
     kwargs: dict[str, Any] = {}
+    model_kwargs: dict[str, Any] = {}
     if config.use_safetensors:
-        kwargs["model_kwargs"] = {"use_safetensors": True}
+        model_kwargs["use_safetensors"] = True
+    if config.device_map:
+        model_kwargs["device_map"] = config.device_map
+    if model_kwargs:
+        kwargs["model_kwargs"] = model_kwargs
     if config.trust_remote_code:
         kwargs["trust_remote_code"] = True
 

@@ -51,6 +51,7 @@ class ModelConfig:  # Model settings for evaluation
     trust_remote_code: bool
     query_prompt: str | None = None
     document_prompt: str | None = None
+    device_map: str | None = None
 
 
 @dataclass
