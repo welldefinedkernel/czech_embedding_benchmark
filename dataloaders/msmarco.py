@@ -43,10 +43,3 @@ class MSMarcoDatasetLoader:
                 records.append(json.loads(line))
 
         return records
-
-
-if __name__ == "__main__":
-    loader = MSMarcoDatasetLoader(split="validation")
-    dataset = loader.load(limit=10)
-    print(dataset)
-    print(dataset[0])

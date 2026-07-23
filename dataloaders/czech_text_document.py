@@ -59,9 +59,3 @@ class CzechTextDocumentDatasetLoader:
         text = " ".join(text.split())
         return text
 
-
-if __name__ == "__main__":
-    loader = CzechTextDocumentDatasetLoader()
-    dataset = loader.load(limit=10)
-    print(dataset)
-    print(dataset[0])

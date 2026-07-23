@@ -133,8 +133,3 @@ def _resolve_path(path: str, repo_root: Path) -> Path:
     if not resolved.is_absolute():
         resolved = repo_root / resolved
     return resolved.resolve()
-
-
-if __name__ == "__main__":
-    config_file = sys.argv[1]
-    load_config(config_file)
