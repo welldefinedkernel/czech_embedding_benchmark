@@ -20,6 +20,12 @@ def run_mteb_retrieval(
     """Run configured models on given tasks and return MTEB results by model."""
     results: dict[str, ModelResult] = {}
 
+    # Register local tasks before evaluation so instruction-tuned models whose
+    # prompt lookup falls back to `mteb.get_task(task_name)` (e.g. F2LLM, whose
+    # registered "document" prompt is an empty string) can resolve them instead
+    # of raising KeyError mid-encode.
+    _register_local_tasks(tasks)
+
     for model_config, model in zip(config.models, models):
         output_folder = (
             config.run.output_dir / dataset_name / model_config.name.replace("/", "__")
