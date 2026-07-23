@@ -1,6 +1,5 @@
 """Config loader for retrieval evaluation."""
 
-import sys
 import tomllib
 
 from dataclasses import dataclass
