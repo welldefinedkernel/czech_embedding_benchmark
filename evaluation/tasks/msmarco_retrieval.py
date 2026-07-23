@@ -23,6 +23,13 @@ _LANGUAGE_FIELDS: dict[str, dict[str, str]] = {
 
 
 class MSMarcoRetrievalTask(AbsTaskRetrieval):
+    # Fallback instruction used when a model resolves prompts via a registry
+    # lookup by task name (e.g. F2LLM, whose registered "document" prompt is an
+    # empty string). Its model card requires no instruction on documents, so we
+    # override the AbsTaskRetrieval default ("Retrieve text based on user
+    # query.") with an empty string to avoid prepending anything to passages.
+    abstask_prompt = ""
+
     def __init__(
         self,
         dataset_loader: Dataset,
