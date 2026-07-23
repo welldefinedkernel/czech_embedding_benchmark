@@ -1,13 +1,80 @@
 """Build MTEB-compatible HuggingFace embedding models."""
 
-import os
 import mteb
+import os
+import types
 
 from evaluation.config import ModelConfig
 from models.ollama_embedder import OllamaEmbedder
 from typing import Any
 
 os.environ.setdefault("HF_HUB_DISABLE_XET", "1")
+
+_AUTOPROCESSOR_FALLBACK_PATCHED = False
+
+
+def _patch_autoprocessor_tokenizer_fallback() -> None:
+    """Fall back to ``AutoTokenizer`` when ``AutoProcessor`` fails to load.
+
+    Some text embedding models (e.g. Gemma3-based KaLM) declare
+    ``processor_class = "Gemma3Processor"`` in their ``tokenizer_config.json``.
+    SentenceTransformers calls ``AutoProcessor.from_pretrained`` unconditionally,
+    which then tries to build the multimodal processor and dies because the repo
+    ships no image-processor config. These models are text-only, so falling back
+    to ``AutoTokenizer`` yields the correct tokenizer.
+    """
+    global _AUTOPROCESSOR_FALLBACK_PATCHED
+    if _AUTOPROCESSOR_FALLBACK_PATCHED:
+        return
+
+    from transformers import AutoProcessor, AutoTokenizer
+
+    original_from_pretrained = AutoProcessor.from_pretrained.__func__
+
+    def from_pretrained(cls, *args: Any, **kwargs: Any):
+        try:
+            return original_from_pretrained(cls, *args, **kwargs)
+        except Exception:
+            kwargs.pop("image_processor_filename", None)
+            return AutoTokenizer.from_pretrained(*args, **kwargs)
+
+    AutoProcessor.from_pretrained = classmethod(from_pretrained)
+    _AUTOPROCESSOR_FALLBACK_PATCHED = True
+
+
+def _preserve_sharding_during_encode(mteb_model: Any) -> None:
+    """Stop ``encode`` from consolidating a multi-GPU sharded model onto one device.
+
+    When a model is loaded with ``device_map="auto"`` its parameters are split
+    across GPUs, and accelerate hooks move activations between devices during
+    ``forward()``. SentenceTransformers' ``encode()`` calls ``self.to(device)``,
+    which tries to pull every shard onto a single GPU and OOMs for models larger
+    than one card. When the underlying model is sharded across multiple devices,
+    replace ``.to`` on that SentenceTransformer instance with a no-op so the
+    dispatch is preserved. Single-device models are left untouched.
+    """
+    st_model = getattr(mteb_model, "model", None)
+    if st_model is None or not hasattr(st_model, "modules"):
+        return
+
+    device_map: dict[str, Any] | None = None
+    for module in st_model.modules():
+        candidate = getattr(module, "hf_device_map", None)
+        if candidate:
+            device_map = candidate
+            break
+
+    if not device_map:
+        return
+
+    distinct_devices = {str(dev) for dev in device_map.values()}
+    if len(distinct_devices) <= 1:
+        return
+
+    def _noop_to(self: Any, *args: Any, **kwargs: Any) -> Any:
+        return self
+
+    st_model.to = types.MethodType(_noop_to, st_model)
 
 
 def build_model(config: ModelConfig, device: str) -> Any:
@@ -37,4 +104,8 @@ def build_model(config: ModelConfig, device: str) -> Any:
     if config.trust_remote_code:
         kwargs["trust_remote_code"] = True
 
-    return mteb.get_model(config.name, device=device, **kwargs)
+    _patch_autoprocessor_tokenizer_fallback()
+
+    model = mteb.get_model(config.name, device=device, **kwargs)
+    _preserve_sharding_during_encode(model)
+    return model
