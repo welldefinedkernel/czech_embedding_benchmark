@@ -21,8 +21,8 @@ data/synthetic/
 .deepeval/
 .ruff_cache/
 
-# Evaluation results
-results/
+# Evaluation results: metrics are committed, per-query prediction dumps are not
+results/**/*_predictions.json
 
 # Local docs files
 docs/
