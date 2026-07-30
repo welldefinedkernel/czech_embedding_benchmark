@@ -1,0 +1,8 @@
+{
+  "microsoft/harrier-oss-v1-0.6b": {
+    "Mean(Task)": 0.7116811537554344,
+    "Mean(TaskType)": 0.7116811537554344,
+    "Retrieval": 0.7116811537554344,
+    "Rank": 1
+  }
+}
