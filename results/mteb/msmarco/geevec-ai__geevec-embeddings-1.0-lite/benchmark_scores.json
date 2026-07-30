@@ -1,0 +1,8 @@
+{
+  "geevec-ai/geevec-embeddings-1.0-lite": {
+    "Mean(Task)": 0.4124920137727437,
+    "Mean(TaskType)": 0.4124920137727437,
+    "Retrieval": 0.4124920137727437,
+    "Rank": 1
+  }
+}

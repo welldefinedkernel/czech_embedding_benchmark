@@ -1,0 +1,8 @@
+{
+  "Qwen/Qwen3-Embedding-8B": {
+    "Mean(Task)": 0.5006385485927591,
+    "Mean(TaskType)": 0.5006385485927591,
+    "Retrieval": 0.5006385485927591,
+    "Rank": 1
+  }
+}
