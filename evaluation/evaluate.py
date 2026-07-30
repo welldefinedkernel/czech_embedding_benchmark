@@ -39,7 +39,9 @@ def main(args):
                 split=dataset_split,
             )
             dataset = loader.load(limit=config.msmarco.limit)
-            print(f"Loaded MS MARCO '{dataset_split}' split with {len(dataset)} records.")
+            print(
+                f"Loaded MS MARCO '{dataset_split}' split with {len(dataset)} records."
+            )
 
             for query_lang, passage_lang in config.msmarco.language_pairs:
                 tasks.append(

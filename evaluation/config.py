@@ -102,7 +102,9 @@ def load_config(config_path: str | Path) -> EvaluationConfig:
             splits=tuple(msmarco["splits"]),
             language_pairs=tuple(
                 tuple(pair)
-                for pair in msmarco.get("language_pairs", DEFAULT_MSMARCO_LANGUAGE_PAIRS)
+                for pair in msmarco.get(
+                    "language_pairs", DEFAULT_MSMARCO_LANGUAGE_PAIRS
+                )
             ),
             limit=msmarco.get("limit"),
         )
