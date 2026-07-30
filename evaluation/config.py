@@ -15,6 +15,7 @@ class RunConfig:  # Evaluation run settings
     device: str
     resume_from_partial: bool
     write_predictions: bool
+    show_progress_bar: bool
 
 
 # Query language / passage language combinations evaluated by default.
@@ -93,6 +94,7 @@ def load_config(config_path: str | Path) -> EvaluationConfig:
             device=run.get("device", "cuda"),
             resume_from_partial=run.get("resume_from_partial", False),
             write_predictions=run.get("write_predictions", True),
+            show_progress_bar=run.get("show_progress_bar", True),
         ),
         msmarco=MSMarcoConfig(
             input_path=_resolve_path(msmarco["input_path"], root),

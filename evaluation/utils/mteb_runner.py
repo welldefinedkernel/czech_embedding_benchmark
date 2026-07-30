@@ -42,6 +42,7 @@ def run_mteb_retrieval(
                 {
                     "normalize_embeddings": model_config.normalize_embeddings,
                     "batch_size": config.run.batch_size,
+                    "show_progress_bar": config.run.show_progress_bar,
                 },
             ),
             overwrite_strategy=(
@@ -51,7 +52,7 @@ def run_mteb_retrieval(
                 str(output_folder) if config.run.write_predictions else None
             ),
             raise_error=True,
-            show_progress_bar=True,
+            show_progress_bar=config.run.show_progress_bar,
             num_proc=config.run.num_proc,
         )
         (output_folder / "metrics.json").write_text(

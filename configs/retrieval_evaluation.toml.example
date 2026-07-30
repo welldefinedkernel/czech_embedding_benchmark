@@ -8,6 +8,7 @@
 # num_proc = <int>
 # resume_from_partial = <true|false>
 # write_predictions = <true|false>
+# show_progress_bar = <true|false>  # false silences tqdm bars (smaller cluster logs)
 
 [datasets.msmarco]
 # enabled = <true|false>
