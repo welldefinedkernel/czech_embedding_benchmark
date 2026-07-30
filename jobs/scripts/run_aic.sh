@@ -62,11 +62,13 @@ export PYTORCH_CUDA_ALLOC_CONF="expandable_segments:True"
 mkdir -p "$TMPDIR" "$HF_HOME" "$HF_DATASETS_CACHE" "$HUGGINGFACE_HUB_CACHE" "$TRANSFORMERS_CACHE"
 
 # --- Environment ---------------------------------------------------------
-# VENV may override the default virtualenv (e.g. VENV=.venv-nemotron for the
-# nvidia/llama-embed-nemotron-8b model, which needs transformers==4.51.0 +
-# flash-attn and cannot share the main .venv). Relative to $REPO.
+# VENV may override the default virtualenv (e.g. VENV=venvs/.venv-nemotron for
+# the nvidia/llama-embed-nemotron-8b model, which needs transformers==4.51.0 +
+# flash-attn and cannot share the main .venv). Relative to $REPO. All venvs
+# live under venvs/ (for `uv sync`/`uv add` on the main env, export
+# UV_PROJECT_ENVIRONMENT=venvs/.venv first - uv has no config-file setting for this).
 cd "$REPO"
-VENV="${VENV:-.venv}"
+VENV="${VENV:-venvs/.venv}"
 source "$VENV/bin/activate"
 
 echo "Job:      ${SLURM_JOB_ID:-local}"

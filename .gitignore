@@ -7,7 +7,7 @@ wheels/
 *.egg-info
 
 # Virtual environments
-.venv/
+venvs/
 
 # Datasets
 czech_text_document_corpus_v20/

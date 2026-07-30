@@ -49,7 +49,7 @@ mkdir -p "$TMPDIR" "$HF_HOME"
 
 # --- Environment ---------------------------------------------------------
 cd "$REPO"
-source .venv/bin/activate
+source venvs/.venv/bin/activate
 
 echo "Job:      ${PBS_JOBID:-local}"
 echo "Node:     $(hostname)"
