@@ -99,6 +99,8 @@ def build_model(config: ModelConfig, device: str) -> Any:
         model_kwargs["use_safetensors"] = True
     if config.device_map:
         model_kwargs["device_map"] = config.device_map
+    if config.model_dtype:
+        model_kwargs["torch_dtype"] = config.model_dtype
     if model_kwargs:
         kwargs["model_kwargs"] = model_kwargs
     if config.trust_remote_code:
