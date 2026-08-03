@@ -1,11 +1,11 @@
 """Loader for the MS Marco Corpus `.jsonl` files."""
 
 import json
-
 from dataclasses import dataclass, field
-from datasets import Dataset
 from pathlib import Path
 from typing import Any
+
+from datasets import Dataset
 
 
 @dataclass

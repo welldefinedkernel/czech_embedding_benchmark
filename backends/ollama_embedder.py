@@ -1,12 +1,12 @@
 """MTEB-compatible embedding encoder run on a local Ollama server."""
 
-import numpy as np
 import os
-import requests
+from typing import Any
 
+import numpy as np
+import requests
 from mteb.models.abs_encoder import AbsEncoder
 from mteb.models.model_meta import ModelMeta, ScoringFunction
-from typing import Any
 
 
 class OllamaEmbedder(AbsEncoder):
