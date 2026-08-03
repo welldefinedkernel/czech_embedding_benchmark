@@ -34,7 +34,7 @@ class AzureLLM(DeepEvalBaseLLM):
             return response.content
         except Exception as e:
             print(f"[AzureLLM generate ERROR]: {e}")
-            raise e
+            raise
 
     async def a_generate(self, prompt: str, **kwargs) -> str:
         if "schema" in kwargs:
@@ -44,7 +44,7 @@ class AzureLLM(DeepEvalBaseLLM):
             return response.content
         except Exception as e:
             print(f"[AzureLLM a_generate ERROR]: {e}")
-            raise e
+            raise
 
     def get_model_name(self) -> str:
         return self.deployment_name
