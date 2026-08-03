@@ -18,7 +18,6 @@ ms_marco/
 
 # Tool-generated files
 .deepeval/
-.ruff_cache/
 
 # Evaluation results: metrics are committed, per-query prediction dumps are not
 results/**/*_predictions.json

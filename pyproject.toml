@@ -28,5 +28,8 @@ dev = [
 requires = ["setuptools>=69"]
 build-backend = "setuptools.build_meta"
 
+[tool.ruff]
+cache-dir = ".cache/ruff"
+
 [tool.setuptools.packages.find]
 include = ["backends*", "dataloaders*", "evaluation*"]
