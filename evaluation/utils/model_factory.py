@@ -1,12 +1,13 @@
 """Build MTEB-compatible HuggingFace embedding models."""
 
-import mteb
 import os
 import types
-
-from evaluation.config import ModelConfig
-from models.ollama_embedder import OllamaEmbedder
 from typing import Any
+
+import mteb
+
+from backends.ollama_embedder import OllamaEmbedder
+from evaluation.utils.config import ModelConfig
 
 os.environ.setdefault("HF_HUB_DISABLE_XET", "1")
 

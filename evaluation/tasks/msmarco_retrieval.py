@@ -1,10 +1,12 @@
 """MS MARCO MTEB Retrieval evaluation task definition."""
 
+from typing import Any, cast
+
 from datasets import Dataset
-from evaluation.config import MSMarcoConfig
 from mteb.abstasks.retrieval import AbsTaskRetrieval
 from mteb.abstasks.task_metadata import TaskMetadata
-from typing import Any, cast
+
+from evaluation.utils.config import MSMarcoConfig
 
 # Language codes supported by the translated MS MARCO dataset, mapped to the
 # dataset field holding their text and their MTEB eval_langs code.

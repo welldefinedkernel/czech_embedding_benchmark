@@ -12,14 +12,12 @@ venvs/
 # Datasets
 czech_text_document_corpus_v20/
 ms_marco/
-data/synthetic/
 
 # Environment variables
 .env
 
 # Tool-generated files
 .deepeval/
-.ruff_cache/
 
 # Evaluation results: metrics are committed, per-query prediction dumps are not
 results/**/*_predictions.json
