@@ -111,4 +111,26 @@ def build_model(config: ModelConfig, device: str) -> Any:
 
     model = mteb.get_model(config.name, device=device, **kwargs)
     _preserve_sharding_during_encode(model)
+    _cap_max_seq_length(model, config.max_seq_length)
     return model
+
+
+def _cap_max_seq_length(mteb_model: Any, cap: int | None) -> None:
+    """Lower a model's input truncation length to ``cap`` tokens.
+
+    Only ever lowers: a model whose backbone maxes out below ``cap`` (e.g. e5's
+    512-position XLM-R) keeps its own limit. Long documents otherwise blow up
+    VRAM and make models incomparable, since native context windows range from
+    512 to 32k tokens.
+    """
+    if cap is None:
+        return
+
+    st_model = getattr(mteb_model, "model", None)
+    current = getattr(st_model, "max_seq_length", None)
+    if current is None:
+        print(f"WARNING: cannot apply max_seq_length={cap}, model exposes none.")
+        return
+
+    st_model.max_seq_length = min(current, cap)
+    print(f"max_seq_length: {current} -> {st_model.max_seq_length}")

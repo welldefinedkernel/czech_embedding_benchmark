@@ -36,10 +36,10 @@ class MSMarcoConfig:  # MSMarco dataset settings
 
 @dataclass
 class CTDCSyntheticConfig:  # CTDC Synthetic dataset settings
-    input_path: Path
-    query_field: str
-    passage_text_field: str
-    limit: int | None
+    synthetic_path: Path
+    corpus_dir: Path
+    query_limit: int | None
+    corpus_limit: int | None
 
 
 @dataclass
@@ -52,6 +52,7 @@ class ModelConfig:  # Model settings for evaluation
     document_prompt: str | None = None
     device_map: str | None = None
     model_dtype: str | None = None
+    max_seq_length: int | None = None
 
 
 @dataclass
@@ -110,10 +111,10 @@ def load_config(config_path: str | Path) -> EvaluationConfig:
         if msmarco["enabled"]
         else None,
         ctdc_synthetic=CTDCSyntheticConfig(
-            input_path=_resolve_path(ctdc_synthetic["input_path"], root),
-            query_field=ctdc_synthetic["query_field"],
-            passage_text_field=ctdc_synthetic["passage_text_field"],
-            limit=ctdc_synthetic.get("limit"),
+            synthetic_path=_resolve_path(ctdc_synthetic["synthetic_path"], root),
+            corpus_dir=_resolve_path(ctdc_synthetic["corpus_dir"], root),
+            query_limit=ctdc_synthetic.get("query_limit"),
+            corpus_limit=ctdc_synthetic.get("corpus_limit"),
         )
         if ctdc_synthetic["enabled"]
         else None,
