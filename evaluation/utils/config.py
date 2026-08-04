@@ -1,7 +1,6 @@
 """Config loader for retrieval evaluation."""
 
 import tomllib
-
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -74,7 +73,7 @@ class EvaluationConfig:  # Overall evaluation configuration
 
 def load_config(config_path: str | Path) -> EvaluationConfig:
     path = Path(config_path).expanduser().resolve()  # config file path
-    root = Path(__file__).resolve().parents[1]  # repository root path
+    root = Path(__file__).resolve().parents[2]  # repository root path
 
     with path.open("rb") as config_file:
         raw = tomllib.load(config_file)

@@ -29,14 +29,14 @@ class AzureEmbedder(DeepEvalBaseEmbeddingModel):
             return self.model.embed_query(text)
         except Exception as e:
             print(f"[AzureEmbedder embed_text ERROR]: {e}")
-            raise e
+            raise
 
     async def a_embed_text(self, text: str, **kwargs) -> list[float]:
         try:
             return await self.model.aembed_query(text)
         except Exception as e:
             print(f"[AzureEmbedder a_embed_text ERROR]: {e}")
-            raise e
+            raise
 
     def embed_texts(self, texts: list[str]) -> list[list[float]]:
         return self.model.embed_documents(texts)

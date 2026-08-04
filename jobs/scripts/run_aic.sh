@@ -22,7 +22,7 @@
 #   sbatch --constraint=gpu_cc8.6 --export=ALL,CONFIG=... jobs/scripts/run_aic.sh
 #
 # CONFIG may be absolute or relative to the repository root. Results are
-# written by evaluation/evaluate.py to results/mteb/... exactly as usual.
+# written by run.py to results/mteb/... exactly as usual.
 
 set -euo pipefail
 
@@ -77,6 +77,6 @@ echo "Config:   $CONFIG_PATH"
 echo "Started:  $(date)"
 
 # --- Run evaluation (writes results to results/ in the repo) -------------
-python evaluation/evaluate.py --config "$CONFIG_PATH"
+python run.py --config "$CONFIG_PATH"
 
 echo "Finished: $(date)"

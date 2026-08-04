@@ -1,13 +1,15 @@
 """MTEB retrieval runner."""
 
 import json
-import mteb
+from collections.abc import Sequence
+from pathlib import Path
+from typing import Any, cast
 
-from evaluation.config import EvaluationConfig
+import mteb
 from mteb.benchmarks.benchmark import Benchmark
 from mteb.results import BenchmarkResults, ModelResult
-from pathlib import Path
-from typing import Any, Sequence, cast
+
+from evaluation.utils.config import EvaluationConfig
 
 
 def run_mteb_retrieval(

@@ -3,16 +3,17 @@
 import argparse
 import os
 
-from config import load_config
 from dotenv import load_dotenv
+from mteb.benchmarks.benchmark import Benchmark
+
 from dataloaders.msmarco import MSMarcoDatasetLoader
 from evaluation.tasks.msmarco_retrieval import MSMarcoRetrievalTask
+from evaluation.utils.config import load_config
 from evaluation.utils.model_factory import build_model
 from evaluation.utils.mteb_runner import (
     run_mteb_multilingual_retrieval,
     run_mteb_retrieval,
 )
-from mteb.benchmarks.benchmark import Benchmark
 
 load_dotenv()
 os.environ.setdefault("HF_HUB_DISABLE_XET", "1")
