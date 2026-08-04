@@ -52,6 +52,7 @@ class ModelConfig:  # Model settings for evaluation
     document_prompt: str | None = None
     device_map: str | None = None
     model_dtype: str | None = None
+    max_seq_length: int | None = None
 
 
 @dataclass

@@ -30,6 +30,7 @@
 # name = "<huggingface-model-id>"
 # normalize_embeddings = <true|false>
 # use_safetensors = <true|false>
+# max_seq_length = <int>  # optional truncation cap; only lowers a model's native limit
 
 # Add more models by repeating [[models]] with the same keys.
 # [[models]]
