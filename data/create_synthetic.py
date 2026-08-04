@@ -1,11 +1,13 @@
 """Create a synthetic golden dataset from the Czech Text Document Corpus (CTDC)."""
 
 import argparse
+import json
 import random
 import re
 from collections import defaultdict
 from pathlib import Path
 
+from deepeval.dataset.golden import Golden
 from deepeval.synthesizer import Synthesizer
 from deepeval.synthesizer.config import StylingConfig
 
@@ -16,6 +18,7 @@ OUTPUT_DIR = Path("data/czech_text_document_corpus_v20/synthetic")
 
 MIN_WORDS = 100
 OPENING_TOKENS = 8
+BATCH_SIZE = 50
 
 STYLING_CONFIG = StylingConfig(
     scenario=(
@@ -111,6 +114,50 @@ def sample_documents(
     return documents
 
 
+def _to_records(goldens: list[Golden]) -> list[dict]:
+    """Match the JSON schema produced by `Synthesizer.save_as`."""
+    return [
+        {
+            "input": golden.input,
+            "actual_output": golden.actual_output,
+            "expected_output": golden.expected_output,
+            "context": golden.context,
+            "source_file": golden.source_file,
+        }
+        for golden in goldens
+    ]
+
+
+def generate_batch(
+    synthesizer: Synthesizer,
+    batch: list[tuple[str, str, str]],
+    goldens_per_document: int,
+    include_expected_output: bool,
+) -> list[Golden]:
+    """Generate goldens for a batch, dropping documents the provider refuses."""
+    try:
+        return synthesizer.generate_goldens_from_contexts(
+            contexts=[[text] for _, _, text in batch],
+            include_expected_output=include_expected_output,
+            max_goldens_per_context=goldens_per_document,
+            source_files=[document_id for document_id, _, _ in batch],
+        )
+    except Exception as error:
+        if len(batch) == 1:
+            print(f"  skipping {batch[0][0]}: {error}")
+            return []
+        # One failed request aborts the whole call, so re-run the rest one by one.
+        print(f"  batch of {len(batch)} failed ({error}); retrying individually")
+        goldens: list[Golden] = []
+        for document in batch:
+            goldens.extend(
+                generate_batch(
+                    synthesizer, [document], goldens_per_document, include_expected_output
+                )
+            )
+        return goldens
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
@@ -138,6 +185,16 @@ def main() -> None:
         parser.error("--documents and --goldens-per-document must be >= 1")
 
     documents = sample_documents(args.sources_dir, args.documents, args.seed)
+
+    args.output_dir.mkdir(parents=True, exist_ok=True)
+    output_path = args.output_dir / f"{args.name}.json"
+    records: list[dict] = []
+    if output_path.exists():
+        records = json.loads(output_path.read_text(encoding="utf-8"))
+        done = {record["source_file"] for record in records}
+        documents = [doc for doc in documents if doc[0] not in done]
+        print(f"Resuming {output_path}: {len(records)} goldens from {len(done)} documents.")
+
     themes = {theme for _, theme, _ in documents}
     print(f"Sampled {len(documents)} documents across {len(themes)} themes.")
 
@@ -146,19 +203,26 @@ def main() -> None:
         max_concurrent=args.max_concurrent,
         styling_config=STYLING_CONFIG,
     )
-    synthesizer.generate_goldens_from_contexts(
-        contexts=[[text] for _, _, text in documents],
-        include_expected_output=not args.no_expected_output,
-        max_goldens_per_context=args.goldens_per_document,
-        source_files=[document_id for document_id, _, _ in documents],
-    )
 
-    args.output_dir.mkdir(parents=True, exist_ok=True)
-    synthesizer.save_as(
-        file_type="json",
-        directory=str(args.output_dir),
-        file_name=args.name,
-    )
+    for start in range(0, len(documents), BATCH_SIZE):
+        batch = documents[start : start + BATCH_SIZE]
+        records.extend(
+            _to_records(
+                generate_batch(
+                    synthesizer,
+                    batch,
+                    args.goldens_per_document,
+                    not args.no_expected_output,
+                )
+            )
+        )
+        output_path.write_text(
+            json.dumps(records, indent=4, ensure_ascii=False), encoding="utf-8"
+        )
+        print(
+            f"{min(start + BATCH_SIZE, len(documents))}/{len(documents)} documents "
+            f"-> {len(records)} goldens saved to {output_path}"
+        )
 
 
 if __name__ == "__main__":
