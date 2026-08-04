@@ -6,7 +6,9 @@ import os
 from dotenv import load_dotenv
 from mteb.benchmarks.benchmark import Benchmark
 
+from dataloaders.czech_text_document import CzechTextDocumentDatasetLoader
 from dataloaders.msmarco import MSMarcoDatasetLoader
+from evaluation.tasks.ctdc_retrieval import CTDCSyntheticRetrievalTask
 from evaluation.tasks.msmarco_retrieval import MSMarcoRetrievalTask
 from evaluation.utils.config import load_config
 from evaluation.utils.model_factory import build_model
@@ -66,7 +68,29 @@ def main(args):
 
     # CTDC Synthetic evaluation
     if config.ctdc_synthetic:
-        ...
+        loader = CzechTextDocumentDatasetLoader(
+            synthetic_path=config.ctdc_synthetic.synthetic_path,
+            corpus_dir=config.ctdc_synthetic.corpus_dir,
+        )
+        data = loader.load(
+            query_limit=config.ctdc_synthetic.query_limit,
+            corpus_limit=config.ctdc_synthetic.corpus_limit,
+        )
+        print(
+            f"Loaded CTDC synthetic set with {len(data.queries)} queries "
+            f"and {len(data.corpus)} corpus documents."
+        )
+
+        tasks = [CTDCSyntheticRetrievalTask(dataset_loader=data)]
+        benchmark = Benchmark(name="CTDC Synthetic (cz)", tasks=tasks)
+
+        run_mteb_retrieval(
+            config=config,
+            tasks=tasks,
+            models=models,
+            dataset_name="ctdc_synthetic",
+            benchmark=benchmark,
+        )
 
     # Official MTEB multilingual retrieval evaluation
     if config.multilingual_mteb:
