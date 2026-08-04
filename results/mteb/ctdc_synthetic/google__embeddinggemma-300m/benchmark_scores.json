@@ -1,0 +1,8 @@
+{
+  "google/embeddinggemma-300m": {
+    "Mean(Task)": 0.6880663992713956,
+    "Mean(TaskType)": 0.6880663992713956,
+    "Retrieval": 0.6880663992713956,
+    "Rank": 1
+  }
+}
