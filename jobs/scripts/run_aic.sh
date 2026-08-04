@@ -5,7 +5,7 @@
 #SBATCH --constraint=gpu_cc8.6
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=64G
-#SBATCH -t 2-00:00:00
+#SBATCH -t 7-00:00:00
 #SBATCH -o /home/tomchikr/czech_embedding_benchmark/jobs/logs/%j.out
 #SBATCH --mail-type=BEGIN,END,FAIL
 #SBATCH --mail-user=roman.tomchik953@student.cuni.cz
@@ -77,6 +77,8 @@ echo "Config:   $CONFIG_PATH"
 echo "Started:  $(date)"
 
 # --- Run evaluation (writes results to results/ in the repo) -------------
-python run.py --config "$CONFIG_PATH"
+# `/usr/bin/time -v` logs peak host RSS; SLURM's cgroup accounting is off here,
+# so `sacct MaxRSS` is always empty and this is the only per-job RAM figure.
+/usr/bin/time -v python run.py --config "$CONFIG_PATH"
 
 echo "Finished: $(date)"
