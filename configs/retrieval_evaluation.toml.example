@@ -19,8 +19,10 @@
 
 [datasets.ctdc_synthetic]
 # enabled = <true|false>
-# input_path = "<path-to-ctdc-synthetic-jsonl>"
-# limit = <int>
+# synthetic_path = "<path-to-ctdc-synthetic-json>"   # synthetic queries + relevant document ids
+# corpus_dir = "<path-to-ctdc-corpus-dir>"           # directory containing a "sources/*.txt" folder
+# query_limit = <int>   # max synthetic queries to evaluate (omit for all)
+# corpus_limit = <int>  # extra distractor documents on top of the relevant ones (omit for all)
 
 [mteb.multilingual]
 # enabled = <true|false>
