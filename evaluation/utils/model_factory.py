@@ -36,7 +36,6 @@ def _patch_autoprocessor_tokenizer_fallback() -> None:
         try:
             return original_from_pretrained(cls, *args, **kwargs)
         except Exception:
-            kwargs.pop("image_processor_filename", None)
             return AutoTokenizer.from_pretrained(*args, **kwargs)
 
     AutoProcessor.from_pretrained = classmethod(from_pretrained)
@@ -122,15 +121,19 @@ def _cap_max_seq_length(mteb_model: Any, cap: int | None) -> None:
     512-position XLM-R) keeps its own limit. Long documents otherwise blow up
     VRAM and make models incomparable, since native context windows range from
     512 to 32k tokens.
+
+    SentenceTransformer-backed models hold the limit on ``mteb_model.model``,
+    while mteb's dedicated encoders (e.g. LlamaEmbedNemotron) tokenize
+    themselves and hold it on the wrapper.
     """
     if cap is None:
         return
 
-    st_model = getattr(mteb_model, "model", None)
-    current = getattr(st_model, "max_seq_length", None)
-    if current is None:
-        print(f"WARNING: cannot apply max_seq_length={cap}, model exposes none.")
-        return
+    for holder in (getattr(mteb_model, "model", None), mteb_model):
+        current = getattr(holder, "max_seq_length", None)
+        if current is not None:
+            holder.max_seq_length = min(current, cap)
+            print(f"max_seq_length: {current} -> {holder.max_seq_length}")
+            return
 
-    st_model.max_seq_length = min(current, cap)
-    print(f"max_seq_length: {current} -> {st_model.max_seq_length}")
+    print(f"WARNING: cannot apply max_seq_length={cap}, model exposes none.")

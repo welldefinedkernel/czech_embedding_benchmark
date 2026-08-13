@@ -119,10 +119,10 @@ def load_config(config_path: str | Path) -> EvaluationConfig:
         if ctdc_synthetic["enabled"]
         else None,
         multilingual_mteb=MultilingualMTEBConfig(
-            enabled=multilingual_mteb["enabled"],
+            enabled=True,
             include_tasks=tuple(multilingual_mteb["include_tasks"]),
         )
-        if multilingual_mteb["enabled"]
+        if multilingual_mteb.get("enabled", False)
         else None,
         models=tuple(ModelConfig(**model) for model in models),
         config_path=path,
