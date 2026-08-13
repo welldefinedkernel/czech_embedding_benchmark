@@ -26,7 +26,9 @@ RETRIEVAL_METRICS = (
     ("mrr_at_10", "MRR@10"),
     ("ndcg_at_10", "nDCG@10"),
     ("map_at_10", "MAP@10"),
+    ("recall_at_1", "Recall@1"),
     ("recall_at_10", "Recall@10"),
+    ("recall_at_20", "Recall@20"),
     ("recall_at_100", "Recall@100"),
 )
 
