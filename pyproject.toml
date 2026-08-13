@@ -1,13 +1,12 @@
 [project]
 name = "czech-embedding-benchmark"
-version = "0.11.2"
+version = "0.11.3"
 description = "Evaluation and comparison of multilingual and Czech-specific embedding models"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "datasets>=3.0.0",
     "pyclean>=3.7.0",
-    "datasets>=3.0.0",
     "deepeval>=4.0.5",
     "dotenv>=0.9.9",
     "langchain-openai>=1.2.2",
