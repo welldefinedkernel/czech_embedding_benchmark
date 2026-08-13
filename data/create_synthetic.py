@@ -14,7 +14,7 @@ from deepeval.synthesizer.config import StylingConfig
 from backends.azure_llm import AzureLLM
 
 SOURCES_DIR = Path("data/czech_text_document_corpus_v20/sources")
-OUTPUT_DIR = Path("data/czech_text_document_corpus_v20/synthetic")
+OUTPUT_DIR = Path("data/synthetic")
 
 MIN_WORDS = 100
 OPENING_TOKENS = 8
