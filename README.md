@@ -18,4 +18,5 @@ Full leaderboards are in **[results/README.md](results/README.md)**, covering:
 1. **MS MARCO — Czech** — Czech queries against Czech passages
 2. **MS MARCO — English** — English queries against English passages
 3. **CTDC synthetic — Czech** — synthetic Czech questions against native Czech news articles
-4. **MTEB (Multilingual, v2)** — official retrieval subset
+4. **CTDC synthetic re-ranking — Czech** — same as above, but the metrics are measured after re-ranking of top 100 documents for each query
+5. **MTEB (Multilingual, v2)** — official retrieval subset
