@@ -16,6 +16,9 @@
 # splits = ["<split-name-1>", "<split-name-2>"]
 # language_pairs = [["cz", "cz"], ["cz", "en"], ["en", "cz"], ["en", "en"]]  # optional, defaults to all four
 # limit = <int>
+# reranking = <true|false>                             # optional second stage, see notes below
+# reranking_model = "<huggingface-cross-encoder-id>"
+# reranking_top_k = <int>                              # candidates per query, default 100
 
 [datasets.ctdc_synthetic]
 # enabled = <true|false>
@@ -23,6 +26,18 @@
 # corpus_dir = "<path-to-ctdc-corpus-dir>"           # directory containing a "sources/*.txt" folder
 # query_limit = <int>   # max synthetic queries to evaluate (omit for all)
 # corpus_limit = <int>  # extra distractor documents on top of the relevant ones (omit for all)
+# reranking = <true|false>
+# reranking_model = "<huggingface-cross-encoder-id>"   # e.g. "jinaai/jina-reranker-v3"
+# reranking_top_k = <int>
+
+# Reranking notes:
+# - `enabled` runs first-stage retrieval, `reranking` runs the cross-encoder stage.
+#   They are independent, so `enabled = false` with `reranking = true` rescores an
+#   existing run without recomputing it.
+# - The first-stage run is read from <output_dir>/<task>/<model>/ and is never
+#   configured explicitly, so it must have been produced with
+#   `write_predictions = true`. Missing predictions raise an error naming the path.
+# - Results land in <output_dir>/<task>_rerank/<first-stage-model>/<reranker>/.
 
 [mteb.multilingual]
 # enabled = <true|false>
