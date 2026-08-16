@@ -1,0 +1,8 @@
+{
+  "jinaai/jina-reranker-v2-base-multilingual": {
+    "Mean(Task)": 0.8645436361329423,
+    "Mean(TaskType)": 0.8645436361329423,
+    "Retrieval": 0.8645436361329423,
+    "Rank": 1
+  }
+}

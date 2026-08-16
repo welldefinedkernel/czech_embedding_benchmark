@@ -14,6 +14,7 @@ from evaluation.utils.config import load_config
 from evaluation.utils.model_factory import build_model
 from evaluation.utils.mteb_runner import (
     run_mteb_multilingual_retrieval,
+    run_mteb_reranking,
     run_mteb_retrieval,
 )
 
@@ -27,10 +28,17 @@ def main(args):
     config = load_config(args.config)
     run = config.run
 
-    # Build models
-    models = [
-        build_model(model_config, device=run.device) for model_config in config.models
-    ]
+    # A rerank-only run never encodes with these, so keep them off the GPU.
+    retrieves = (
+        (config.msmarco is not None and config.msmarco.enabled)
+        or (config.ctdc_synthetic is not None and config.ctdc_synthetic.enabled)
+        or config.multilingual_mteb is not None
+    )
+    models = (
+        [build_model(model_config, device=run.device) for model_config in config.models]
+        if retrieves
+        else []
+    )
 
     # MS Marco evaluation
     if config.msmarco:
@@ -58,13 +66,22 @@ def main(args):
                 )
         benchmark = Benchmark(name="MSMarco (cz/en)", tasks=tasks)
 
-        run_mteb_retrieval(
-            config=config,
-            tasks=tasks,
-            models=models,
-            dataset_name="msmarco",
-            benchmark=benchmark,
-        )
+        if config.msmarco.enabled:
+            run_mteb_retrieval(
+                config=config,
+                tasks=tasks,
+                models=models,
+                dataset_name="msmarco",
+                benchmark=benchmark,
+            )
+
+        if config.msmarco.reranking:
+            run_mteb_reranking(
+                config=config,
+                tasks=tasks,
+                dataset_name="msmarco",
+                reranking=config.msmarco.reranking,
+            )
 
     # CTDC Synthetic evaluation
     if config.ctdc_synthetic:
@@ -84,13 +101,22 @@ def main(args):
         tasks = [CTDCSyntheticRetrievalTask(dataset_loader=data)]
         benchmark = Benchmark(name="CTDC Synthetic (cz)", tasks=tasks)
 
-        run_mteb_retrieval(
-            config=config,
-            tasks=tasks,
-            models=models,
-            dataset_name="ctdc_synthetic",
-            benchmark=benchmark,
-        )
+        if config.ctdc_synthetic.enabled:
+            run_mteb_retrieval(
+                config=config,
+                tasks=tasks,
+                models=models,
+                dataset_name="ctdc_synthetic",
+                benchmark=benchmark,
+            )
+
+        if config.ctdc_synthetic.reranking:
+            run_mteb_reranking(
+                config=config,
+                tasks=tasks,
+                dataset_name="ctdc_synthetic",
+                reranking=config.ctdc_synthetic.reranking,
+            )
 
     # Official MTEB multilingual retrieval evaluation
     if config.multilingual_mteb:

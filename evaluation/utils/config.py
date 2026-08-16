@@ -27,19 +27,29 @@ DEFAULT_MSMARCO_LANGUAGE_PAIRS: tuple[tuple[str, str], ...] = (
 
 
 @dataclass
+class RerankingConfig:  # Optional cross-encoder second stage over a task's own run
+    model: str
+    top_k: int = 100
+
+
+@dataclass
 class MSMarcoConfig:  # MSMarco dataset settings
+    enabled: bool
     input_path: Path
     splits: tuple[str, ...]
     language_pairs: tuple[tuple[str, str], ...]
     limit: int | None
+    reranking: RerankingConfig | None = None
 
 
 @dataclass
 class CTDCSyntheticConfig:  # CTDC Synthetic dataset settings
+    enabled: bool
     synthetic_path: Path
     corpus_dir: Path
     query_limit: int | None
     corpus_limit: int | None
+    reranking: RerankingConfig | None = None
 
 
 @dataclass
@@ -98,6 +108,7 @@ def load_config(config_path: str | Path) -> EvaluationConfig:
             show_progress_bar=run.get("show_progress_bar", True),
         ),
         msmarco=MSMarcoConfig(
+            enabled=msmarco["enabled"],
             input_path=_resolve_path(msmarco["input_path"], root),
             splits=tuple(msmarco["splits"]),
             language_pairs=tuple(
@@ -107,16 +118,19 @@ def load_config(config_path: str | Path) -> EvaluationConfig:
                 )
             ),
             limit=msmarco.get("limit"),
+            reranking=_load_reranking(msmarco),
         )
-        if msmarco["enabled"]
+        if _task_active(msmarco)
         else None,
         ctdc_synthetic=CTDCSyntheticConfig(
+            enabled=ctdc_synthetic["enabled"],
             synthetic_path=_resolve_path(ctdc_synthetic["synthetic_path"], root),
             corpus_dir=_resolve_path(ctdc_synthetic["corpus_dir"], root),
             query_limit=ctdc_synthetic.get("query_limit"),
             corpus_limit=ctdc_synthetic.get("corpus_limit"),
+            reranking=_load_reranking(ctdc_synthetic),
         )
-        if ctdc_synthetic["enabled"]
+        if _task_active(ctdc_synthetic)
         else None,
         multilingual_mteb=MultilingualMTEBConfig(
             enabled=True,
@@ -137,3 +151,21 @@ def _resolve_path(path: str, repo_root: Path) -> Path:
     if not resolved.is_absolute():
         resolved = repo_root / resolved
     return resolved.resolve()
+
+
+def _task_active(section: dict) -> bool:
+    """A task is loaded if it retrieves, reranks, or both."""
+    return bool(section["enabled"]) or bool(section.get("reranking", False))
+
+
+def _load_reranking(section: dict) -> RerankingConfig | None:
+    if not section.get("reranking", False):
+        return None
+
+    model = section.get("reranking_model")
+    if not model:
+        raise ValueError(
+            "`reranking = true` requires `reranking_model` to be set to a "
+            "HuggingFace cross-encoder id."
+        )
+    return RerankingConfig(model=str(model), top_k=int(section.get("reranking_top_k", 100)))

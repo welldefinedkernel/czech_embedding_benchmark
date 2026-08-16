@@ -117,11 +117,6 @@ def build_model(config: ModelConfig, device: str) -> Any:
 def _cap_max_seq_length(mteb_model: Any, cap: int | None) -> None:
     """Lower a model's input truncation length to ``cap`` tokens.
 
-    Only ever lowers: a model whose backbone maxes out below ``cap`` (e.g. e5's
-    512-position XLM-R) keeps its own limit. Long documents otherwise blow up
-    VRAM and make models incomparable, since native context windows range from
-    512 to 32k tokens.
-
     SentenceTransformer-backed models hold the limit on ``mteb_model.model``,
     while mteb's dedicated encoders (e.g. LlamaEmbedNemotron) tokenize
     themselves and hold it on the wrapper.

@@ -1,8 +1,8 @@
 {
   "intfloat/multilingual-e5-large": {
-    "Mean(Task)": 0.7562150050945055,
-    "Mean(TaskType)": 0.7562150050945055,
-    "Retrieval": 0.7562150050945055,
+    "Mean(Task)": 0.7572657938480468,
+    "Mean(TaskType)": 0.7572657938480468,
+    "Retrieval": 0.7572657938480468,
     "Rank": 1
   }
 }
