@@ -1,8 +1,8 @@
 {
   "jinaai/jina-embeddings-v5-text-small": {
-    "Mean(Task)": 0.7401569489372575,
-    "Mean(TaskType)": 0.7401569489372575,
-    "Retrieval": 0.7401569489372575,
+    "Mean(Task)": 0.7430745211812586,
+    "Mean(TaskType)": 0.7430745211812586,
+    "Retrieval": 0.7430745211812586,
     "Rank": 1
   }
 }

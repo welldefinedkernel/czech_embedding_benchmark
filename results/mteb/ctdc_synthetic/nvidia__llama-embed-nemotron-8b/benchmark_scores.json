@@ -1,8 +1,8 @@
 {
   "nvidia/llama-embed-nemotron-8b": {
-    "Mean(Task)": 0.7782263169111076,
-    "Mean(TaskType)": 0.7782263169111076,
-    "Retrieval": 0.7782263169111076,
+    "Mean(Task)": 0.778928296873484,
+    "Mean(TaskType)": 0.778928296873484,
+    "Retrieval": 0.778928296873484,
     "Rank": 1
   }
 }

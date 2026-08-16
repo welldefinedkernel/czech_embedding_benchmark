@@ -9,7 +9,8 @@ import mteb
 from mteb.benchmarks.benchmark import Benchmark
 from mteb.results import BenchmarkResults, ModelResult
 
-from evaluation.utils.config import EvaluationConfig
+from evaluation.utils.config import EvaluationConfig, ModelConfig, RerankingConfig
+from evaluation.utils.model_factory import build_model
 
 
 def run_mteb_retrieval(
@@ -18,9 +19,15 @@ def run_mteb_retrieval(
     models: Sequence[Any],
     dataset_name: str,
     benchmark: Benchmark | None = None,
+    model_configs: Sequence[Any] | None = None,
 ) -> dict[str, ModelResult]:
-    """Run configured models on given tasks and return MTEB results by model."""
+    """Run configured models on given tasks and return MTEB results by model.
+
+    `model_configs` overrides `config.models` when the models being evaluated are
+    not the ones the config declares, e.g. a reranker scoring another model's run.
+    """
     results: dict[str, ModelResult] = {}
+    model_configs = config.models if model_configs is None else model_configs
 
     # Register local tasks before evaluation so instruction-tuned models whose
     # prompt lookup falls back to `mteb.get_task(task_name)` (e.g. F2LLM, whose
@@ -28,7 +35,7 @@ def run_mteb_retrieval(
     # of raising KeyError mid-encode.
     _register_local_tasks(tasks)
 
-    for model_config, model in zip(config.models, models):
+    for model_config, model in zip(model_configs, models):
         output_folder = (
             config.run.output_dir / dataset_name / model_config.name.replace("/", "__")
         )
@@ -63,11 +70,82 @@ def run_mteb_retrieval(
         )
         if benchmark is not None:
             _write_benchmark_scores(benchmark, result, output_folder)
-        if config.run.write_predictions:
-            _indent_prediction_files(output_folder)
         results[model_config.name] = result
 
     return results
+
+
+def run_mteb_reranking(
+    config: EvaluationConfig,
+    tasks: Sequence[Any],
+    dataset_name: str,
+    reranking: RerankingConfig,
+) -> dict[str, ModelResult]:
+    """Rescore each configured model's stored predictions with a cross-encoder.
+
+    The first-stage run is located at `<output_dir>/<dataset_name>/<model>`, the
+    same place `run_mteb_retrieval` wrote it, so it is never configured explicitly.
+    """
+    reranker_config = ModelConfig(
+        name=reranking.model,
+        normalize_embeddings=False,
+        use_safetensors=False,
+        trust_remote_code=False,
+    )
+
+    # Check every first-stage run before loading the reranker, so a missing one
+    # fails immediately instead of after a model download.
+    first_stages = [
+        config.run.output_dir / dataset_name / model_config.name.replace("/", "__")
+        for model_config in config.models
+    ]
+    for first_stage in first_stages:
+        for task in tasks:
+            _require_predictions(task, first_stage)
+
+    reranker = build_model(reranker_config, device=config.run.device)
+
+    results: dict[str, ModelResult] = {}
+    for model_config, first_stage in zip(config.models, first_stages):
+        print(f"Reranking top-{reranking.top_k} of {model_config.name}.")
+        rerank_tasks = [
+            _as_reranking_task(task, first_stage, reranking.top_k) for task in tasks
+        ]
+        result = run_mteb_retrieval(
+            config=config,
+            tasks=rerank_tasks,
+            models=[reranker],
+            dataset_name=f"{dataset_name}_rerank/{first_stage.name}",
+            benchmark=Benchmark(
+                name=f"{dataset_name} rerank", tasks=rerank_tasks
+            ),
+            model_configs=[reranker_config],
+        )
+        results[first_stage.name] = result[reranker_config.name]
+    return results
+
+
+def _require_predictions(task: Any, first_stage: Path) -> Path:
+    """Path to a task's stored first-stage run, or a message explaining its absence."""
+    predictions = first_stage / f"{task.metadata.name}_predictions.json"
+    if not predictions.is_file():
+        raise FileNotFoundError(
+            f"Cannot rerank '{task.metadata.name}': no first-stage predictions at "
+            f"{predictions}. Run that model with `enabled = true` and "
+            f"`write_predictions = true` before enabling `reranking`."
+        )
+    return predictions
+
+
+def _as_reranking_task(task: Any, first_stage: Path, top_k: int) -> Any:
+    """Restrict a retrieval task to the top-k a previous run already retrieved."""
+    if not task.data_loaded:
+        task.load_data()
+    # Tasks defined here populate mteb's v1 attributes; convert_to_reranking reads
+    # `self.dataset`. This is a no-op for tasks that already loaded v2 format.
+    task.convert_v1_dataset_format_to_v2(num_proc=None)
+    task.convert_to_reranking(first_stage, top_k=top_k)
+    return task
 
 
 def run_mteb_multilingual_retrieval(
@@ -160,12 +238,3 @@ def _clear_stale_prediction_files(output_folder: Path) -> None:
     """
     for prediction_file in output_folder.glob("*_predictions.json"):
         prediction_file.unlink()
-
-
-def _indent_prediction_files(output_folder: Path) -> None:
-    for prediction_file in output_folder.glob("*_predictions.json"):
-        predictions = json.loads(prediction_file.read_text(encoding="utf-8"))
-        prediction_file.write_text(
-            json.dumps(predictions, ensure_ascii=False, indent=2),
-            encoding="utf-8",
-        )
