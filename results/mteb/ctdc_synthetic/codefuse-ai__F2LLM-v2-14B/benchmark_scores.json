@@ -1,8 +1,8 @@
 {
   "codefuse-ai/F2LLM-v2-14B": {
-    "Mean(Task)": 0.6956994634070315,
-    "Mean(TaskType)": 0.6956994634070315,
-    "Retrieval": 0.6956994634070315,
+    "Mean(Task)": 0.6970433615778547,
+    "Mean(TaskType)": 0.6970433615778547,
+    "Retrieval": 0.6970433615778547,
     "Rank": 1
   }
 }

@@ -1,8 +1,8 @@
 {
   "tencent/KaLM-Embedding-Gemma3-12B-2511": {
-    "Mean(Task)": 0.7797580083399334,
-    "Mean(TaskType)": 0.7797580083399334,
-    "Retrieval": 0.7797580083399334,
+    "Mean(Task)": 0.7808381607048229,
+    "Mean(TaskType)": 0.7808381607048229,
+    "Retrieval": 0.7808381607048229,
     "Rank": 1
   }
 }
