@@ -16,6 +16,7 @@ OUTPUT_FILE = RESULTS_ROOT / "README.md"
 
 MSMARCO_DIR = RESULTS_DIR / "msmarco"
 CTDC_DIR = RESULTS_DIR / "ctdc_synthetic"
+CTDC_RERANK_DIR = RESULTS_DIR / "ctdc_synthetic_rerank"
 MTEB_DIR = RESULTS_DIR / "mteb_multilingual_retrieval"
 
 MSMARCO_CZ_TASK = "msmarco_validation_cz-cz_retrieval"
@@ -39,6 +40,18 @@ def load_model_results(directory: Path) -> list[dict]:
     for metrics_file in sorted(directory.glob("*/metrics.json")):
         metrics = json.loads(metrics_file.read_text(encoding="utf-8"))
         metrics["_dir"] = metrics_file.parent
+        results.append(metrics)
+    return results
+
+
+def load_rerank_results(directory: Path) -> list[dict]:
+    """Load reranked runs, which nest one level deeper as <first stage>/<reranker>."""
+    results = []
+    for metrics_file in sorted(directory.glob("*/*/metrics.json")):
+        metrics = json.loads(metrics_file.read_text(encoding="utf-8"))
+        metrics["_dir"] = metrics_file.parent
+        # `model_name` here is the reranker; the retriever is the parent folder.
+        metrics["_first_stage"] = metrics_file.parent.parent.name.replace("__", "/")
         results.append(metrics)
     return results
 
@@ -110,6 +123,67 @@ def render_retrieval_section(
     return f"## {title}\n\n{description}\n\n" + render_table(header, table_rows)
 
 
+def render_ctdc_rerank_section(
+    rerank_metrics: list[dict], first_stage_metrics: list[dict]
+) -> str:
+    first_stage = {}
+    for metrics in first_stage_metrics:
+        task_result = find_task(metrics, CTDC_TASK)
+        if task_result is not None:
+            first_stage[metrics["model_name"]] = score_entries(task_result)[0]
+
+    rows = []
+    for metrics in rerank_metrics:
+        task_result = find_task(metrics, CTDC_TASK)
+        if task_result is None:
+            continue
+        entry = score_entries(task_result)[0]
+        base = first_stage.get(metrics["_first_stage"], {}).get("mrr_at_10")
+        rows.append(
+            {
+                "model": f"[`{metrics['_first_stage']}`]"
+                f"({metrics['_dir'].relative_to(RESULTS_ROOT)}/)",
+                "scores": [entry.get(key) for key, _ in RETRIEVAL_METRICS],
+                "delta": None if base is None else entry["mrr_at_10"] - base,
+                "date": task_result["date"][:10],
+            }
+        )
+
+    if not rows:
+        return ""
+
+    rows.sort(key=lambda row: row["scores"][0] or 0.0, reverse=True)
+    reranker = rerank_metrics[0]["model_name"]
+
+    header = (
+        ["#", "Retriever"]
+        + [label for _, label in RETRIEVAL_METRICS]
+        + ["ΔMRR@10", "Date"]
+    )
+    table_rows = [
+        [str(rank), row["model"]]
+        + [format_score(score) for score in row["scores"]]
+        + [
+            "—" if row["delta"] is None else f"{row['delta']:+.4f}",
+            row["date"],
+        ]
+        for rank, row in enumerate(rows, start=1)
+    ]
+
+    description = (
+        "The same task after rescoring each retriever's top 100 documents with "
+        f"[`{reranker}`](https://huggingface.co/{reranker}). ΔMRR@10 is measured "
+        "against section 3. Recall@100 is unchanged by construction: reranking "
+        "only reorders the candidates the retriever supplies, so it sets the "
+        "ceiling every reranked score is bounded by."
+    )
+
+    return (
+        "## 4. CTDC synthetic — after reranking\n\n"
+        f"{description}\n\n" + render_table(header, table_rows)
+    )
+
+
 def render_mteb_section(all_metrics: list[dict]) -> str:
     models = []
     for metrics in all_metrics:
@@ -151,7 +225,7 @@ def render_mteb_section(all_metrics: list[dict]) -> str:
     )
 
     return (
-        "## 4. MTEB (Multilingual, v2) — retrieval subset\n\n"
+        "## 5. MTEB (Multilingual, v2) — retrieval subset\n\n"
         "Official MTEB retrieval tasks, scored with each task's own main metric "
         "and averaged over all splits and subsets.\n\n"
         f"{summary}\n\n### Per-task scores\n\n{per_task}"
@@ -161,6 +235,7 @@ def render_mteb_section(all_metrics: list[dict]) -> str:
 def main() -> None:
     msmarco_metrics = load_model_results(MSMARCO_DIR)
     ctdc_metrics = load_model_results(CTDC_DIR)
+    ctdc_rerank_metrics = load_rerank_results(CTDC_RERANK_DIR)
     mteb_metrics = load_model_results(MTEB_DIR)
 
     sections = [
@@ -187,15 +262,14 @@ def main() -> None:
             CTDC_TASK,
             "3. CTDC synthetic — Czech",
             "Synthetic Czech questions against the Czech Text Document Corpus "
-            "(14,971 queries over a 14,690-document corpus of native Czech news "
-            "articles). Every model truncates documents at 1024 tokens "
-            "(`max_seq_length`), except those whose backbone maxes out below that. "
-            "Ranked by the task main score, MRR@10.",
+            "(14,887 queries over a 14,690-document corpus of native Czech news "
+            "articles). Ranked by the task main score, MRR@10.",
         ),
+        render_ctdc_rerank_section(ctdc_rerank_metrics, ctdc_metrics),
         render_mteb_section(mteb_metrics),
     ]
 
-    readme = "\n\n".join(sections) + "\n"
+    readme = "\n\n".join(section for section in sections if section) + "\n"
     OUTPUT_FILE.write_text(readme, encoding="utf-8")
     print(f"Wrote {OUTPUT_FILE.relative_to(RESULTS_ROOT.parent)}")
 
