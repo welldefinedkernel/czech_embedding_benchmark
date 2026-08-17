@@ -63,6 +63,7 @@ class ModelConfig:  # Model settings for evaluation
     device_map: str | None = None
     model_dtype: str | None = None
     max_seq_length: int | None = None
+    pooling_mode: str | None = None
 
 
 @dataclass

@@ -55,6 +55,7 @@
 # normalize_embeddings = <true|false>
 # use_safetensors = <true|false>
 # trust_remote_code = <true|false>
+# pooling_mode = "cls"
 
 # For models too large to fit on a single GPU, set device_map = "auto" to let
 # accelerate shard the model's backbone across all GPUs visible to the process.

@@ -111,6 +111,7 @@ def build_model(config: ModelConfig, device: str) -> Any:
     model = mteb.get_model(config.name, device=device, **kwargs)
     _preserve_sharding_during_encode(model)
     _cap_max_seq_length(model, config.max_seq_length)
+    _set_pooling_mode(model, config.pooling_mode)
     return model
 
 
@@ -132,3 +133,31 @@ def _cap_max_seq_length(mteb_model: Any, cap: int | None) -> None:
             return
 
     print(f"WARNING: cannot apply max_seq_length={cap}, model exposes none.")
+
+
+def _set_pooling_mode(mteb_model: Any, pooling_mode: str | None) -> None:
+    """Force the pooling strategy of a SentenceTransformer-backed model.
+
+    Repos that ship no ``modules.json`` (e.g. Seznam's Czech models) get
+    SentenceTransformer's default mean pooling, which silently produces the
+    wrong embedding space for models trained on the CLS token.
+    """
+    if pooling_mode is None:
+        return
+
+    st_model = getattr(mteb_model, "model", None)
+    pooling = next(
+        (
+            module
+            for module in getattr(st_model, "children", lambda: [])()
+            if type(module).__name__ == "Pooling"
+        ),
+        None,
+    )
+    if pooling is None:
+        print(f"WARNING: cannot apply pooling_mode={pooling_mode}, no Pooling module.")
+        return
+
+    current = pooling.pooling_mode
+    pooling.pooling_mode = pooling_mode
+    print(f"pooling_mode: {current} -> {pooling.pooling_mode}")
