@@ -25,7 +25,7 @@ Czech queries against Czech passages (machine-translated MS MARCO validation spl
 | 13 | [`microsoft/harrier-oss-v1-0.6b`](mteb/msmarco/microsoft__harrier-oss-v1-0.6b/) | 0.3994 | 0.4704 | 0.3923 | 0.2479 | 0.7087 | 0.7927 | 0.9054 | 2026-07-23 |
 | 14 | [`google/embeddinggemma-300m`](mteb/msmarco/google__embeddinggemma-300m/) | 0.3680 | 0.4328 | 0.3620 | 0.2304 | 0.6490 | 0.7284 | 0.8492 | 2026-07-29 |
 | 15 | [`geevec-ai/geevec-embeddings-1.0-lite`](mteb/msmarco/geevec-ai__geevec-embeddings-1.0-lite/) | 0.3138 | 0.3736 | 0.3081 | 0.1905 | 0.5743 | 0.6558 | 0.7915 | 2026-07-27 |
-| 16 | [`Seznam/simcse-retromae-small-cs`](mteb/msmarco/Seznam__simcse-retromae-small-cs/) | 0.1177 | 0.1448 | 0.1140 | 0.0646 | 0.2398 | 0.3025 | 0.4536 | 2026-08-17 |
+| 16 | [`Seznam/simcse-retromae-small-cs`](mteb/msmarco/Seznam__simcse-retromae-small-cs/) | 0.1465 | 0.1802 | 0.1423 | 0.0809 | 0.2972 | 0.3683 | 0.5281 | 2026-08-17 |
 
 ## 2. MS MARCO — English
 
@@ -48,7 +48,7 @@ Original English queries against English passages (MS MARCO validation split). R
 | 13 | [`google/embeddinggemma-300m`](mteb/msmarco/google__embeddinggemma-300m/) | 0.4981 | 0.5757 | 0.4911 | 0.3256 | 0.8324 | 0.9026 | 0.9767 | 2026-07-29 |
 | 14 | [`BAAI/bge-m3`](mteb/msmarco/BAAI__bge-m3/) | 0.4946 | 0.5697 | 0.4870 | 0.3239 | 0.8193 | 0.8887 | 0.9673 | 2026-07-29 |
 | 15 | [`tencent/KaLM-Embedding-Gemma3-12B-2511`](mteb/msmarco/tencent__KaLM-Embedding-Gemma3-12B-2511/) | 0.4685 | 0.5573 | 0.4617 | 0.2820 | 0.8498 | 0.9233 | 0.9860 | 2026-07-28 |
-| 16 | [`Seznam/simcse-retromae-small-cs`](mteb/msmarco/Seznam__simcse-retromae-small-cs/) | 0.0803 | 0.0979 | 0.0776 | 0.0449 | 0.1603 | 0.2038 | 0.3216 | 2026-08-17 |
+| 16 | [`Seznam/simcse-retromae-small-cs`](mteb/msmarco/Seznam__simcse-retromae-small-cs/) | 0.1110 | 0.1354 | 0.1076 | 0.0628 | 0.2208 | 0.2724 | 0.4012 | 2026-08-17 |
 
 ## 3. CTDC synthetic — Czech
 
@@ -71,7 +71,7 @@ Synthetic Czech questions against the Czech Text Document Corpus (14,887 queries
 | 13 | [`codefuse-ai/F2LLM-v2-14B`](mteb/ctdc_synthetic/codefuse-ai__F2LLM-v2-14B/) | 0.6970 | 0.7464 | 0.6970 | 0.5810 | 0.8981 | 0.9338 | 0.9799 | 2026-08-14 |
 | 14 | [`google/embeddinggemma-300m`](mteb/ctdc_synthetic/google__embeddinggemma-300m/) | 0.6892 | 0.7331 | 0.6891 | 0.5909 | 0.8696 | 0.9064 | 0.9619 | 2026-08-14 |
 | 15 | [`geevec-ai/geevec-embeddings-1.0-lite`](mteb/ctdc_synthetic/geevec-ai__geevec-embeddings-1.0-lite/) | 0.5900 | 0.6363 | 0.5897 | 0.4896 | 0.7818 | 0.8348 | 0.9220 | 2026-08-14 |
-| 16 | [`Seznam/simcse-retromae-small-cs`](mteb/ctdc_synthetic/Seznam__simcse-retromae-small-cs/) | 0.3986 | 0.4521 | 0.3985 | 0.2962 | 0.6220 | 0.7022 | 0.8554 | 2026-08-17 |
+| 16 | [`Seznam/simcse-retromae-small-cs`](mteb/ctdc_synthetic/Seznam__simcse-retromae-small-cs/) | 0.4689 | 0.5236 | 0.4688 | 0.3611 | 0.6969 | 0.7682 | 0.8968 | 2026-08-17 |
 
 ## 4. CTDC synthetic — after reranking
 
@@ -94,7 +94,7 @@ The same task after rescoring each retriever's top 100 documents with [`jinaai/j
 | 13 | [`intfloat/multilingual-e5-small`](mteb/ctdc_synthetic_rerank/intfloat__multilingual-e5-small/jinaai__jina-reranker-v2-base-multilingual/) | 0.8567 | 0.8831 | 0.8567 | 0.7871 | 0.9627 | 0.9701 | 0.9749 | +0.1325 | 2026-08-16 |
 | 14 | [`google/embeddinggemma-300m`](mteb/ctdc_synthetic_rerank/google__embeddinggemma-300m/jinaai__jina-reranker-v2-base-multilingual/) | 0.8462 | 0.8722 | 0.8462 | 0.7774 | 0.9503 | 0.9576 | 0.9619 | +0.1570 | 2026-08-16 |
 | 15 | [`geevec-ai/geevec-embeddings-1.0-lite`](mteb/ctdc_synthetic_rerank/geevec-ai__geevec-embeddings-1.0-lite/jinaai__jina-reranker-v2-base-multilingual/) | 0.8147 | 0.8390 | 0.8147 | 0.7494 | 0.9119 | 0.9185 | 0.9220 | +0.2247 | 2026-08-16 |
-| 16 | [`Seznam/simcse-retromae-small-cs`](mteb/ctdc_synthetic_rerank/Seznam__simcse-retromae-small-cs/jinaai__jina-reranker-v2-base-multilingual/) | 0.7669 | 0.7874 | 0.7669 | 0.7113 | 0.8487 | 0.8532 | 0.8554 | +0.3683 | 2026-08-17 |
+| 16 | [`Seznam/simcse-retromae-small-cs`](mteb/ctdc_synthetic_rerank/Seznam__simcse-retromae-small-cs/jinaai__jina-reranker-v2-base-multilingual/) | 0.7994 | 0.8217 | 0.7994 | 0.7395 | 0.8886 | 0.8941 | 0.8968 | +0.3305 | 2026-08-17 |
 
 ## 5. MTEB (Multilingual, v2) — retrieval subset
 
