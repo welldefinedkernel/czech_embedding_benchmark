@@ -1,0 +1,8 @@
+{
+  "mixedbread-ai/mxbai-rerank-large-v2": {
+    "Mean(Task)": 0.8113754836701031,
+    "Mean(TaskType)": 0.8113754836701031,
+    "Retrieval": 0.8113754836701031,
+    "Rank": 1
+  }
+}
