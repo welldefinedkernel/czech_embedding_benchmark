@@ -152,7 +152,10 @@ def generate_batch(
         for document in batch:
             goldens.extend(
                 generate_batch(
-                    synthesizer, [document], goldens_per_document, include_expected_output
+                    synthesizer,
+                    [document],
+                    goldens_per_document,
+                    include_expected_output,
                 )
             )
         return goldens
@@ -193,7 +196,9 @@ def main() -> None:
         records = json.loads(output_path.read_text(encoding="utf-8"))
         done = {record["source_file"] for record in records}
         documents = [doc for doc in documents if doc[0] not in done]
-        print(f"Resuming {output_path}: {len(records)} goldens from {len(done)} documents.")
+        print(
+            f"Resuming {output_path}: {len(records)} goldens from {len(done)} documents."
+        )
 
     themes = {theme for _, theme, _ in documents}
     print(f"Sampled {len(documents)} documents across {len(themes)} themes.")

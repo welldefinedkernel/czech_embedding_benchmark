@@ -149,7 +149,7 @@ def _set_pooling_mode(mteb_model: Any, pooling_mode: str | None) -> None:
     pooling = next(
         (
             module
-            for module in getattr(st_model, "children", lambda: [])()
+            for module in getattr(st_model, "children", list)()
             if type(module).__name__ == "Pooling"
         ),
         None,

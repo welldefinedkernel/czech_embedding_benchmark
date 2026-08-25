@@ -8,7 +8,6 @@ Usage:
 
 import json
 from collections import defaultdict
-from datetime import datetime
 from pathlib import Path
 
 RESULTS_ROOT = Path(__file__).resolve().parent
@@ -193,9 +192,8 @@ def render_ctdc_rerank_section(
         "against section 3. Recall@100 is unchanged."
     )
 
-    return (
-        "## 4. CTDC synthetic — after reranking\n\n"
-        f"{description}\n\n" + "\n\n".join(block for _, block in blocks)
+    return f"## 4. CTDC synthetic — after reranking\n\n{description}\n\n" + "\n\n".join(
+        block for _, block in blocks
     )
 
 

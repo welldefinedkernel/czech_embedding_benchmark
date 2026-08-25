@@ -85,7 +85,9 @@ class CzechTextDocumentDatasetLoader:
 
         for path in sorted(sources_dir.glob("*.txt")):
             is_gold = path.stem in gold_document_ids
-            reached_limit = corpus_limit is not None and distractor_count >= corpus_limit
+            reached_limit = (
+                corpus_limit is not None and distractor_count >= corpus_limit
+            )
             if not is_gold and reached_limit:
                 continue
 

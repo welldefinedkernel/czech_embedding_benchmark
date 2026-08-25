@@ -117,9 +117,7 @@ def run_mteb_reranking(
             tasks=rerank_tasks,
             models=[reranker],
             dataset_name=f"{dataset_name}_rerank/{first_stage.name}",
-            benchmark=Benchmark(
-                name=f"{dataset_name} rerank", tasks=rerank_tasks
-            ),
+            benchmark=Benchmark(name=f"{dataset_name} rerank", tasks=rerank_tasks),
             model_configs=[reranker_config],
         )
         results[first_stage.name] = result[reranker_config.name]
