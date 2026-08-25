@@ -90,7 +90,8 @@ def run_mteb_reranking(
         name=reranking.model,
         normalize_embeddings=False,
         use_safetensors=False,
-        trust_remote_code=False,
+        trust_remote_code=True,
+        max_seq_length=reranking.max_seq_length,
     )
 
     # Check every first-stage run before loading the reranker, so a missing one

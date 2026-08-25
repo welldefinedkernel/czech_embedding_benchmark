@@ -30,6 +30,7 @@ DEFAULT_MSMARCO_LANGUAGE_PAIRS: tuple[tuple[str, str], ...] = (
 class RerankingConfig:  # Optional cross-encoder second stage over a task's own run
     model: str
     top_k: int = 100
+    max_seq_length: int | None = None
 
 
 @dataclass
@@ -169,4 +170,8 @@ def _load_reranking(section: dict) -> RerankingConfig | None:
             "`reranking = true` requires `reranking_model` to be set to a "
             "HuggingFace cross-encoder id."
         )
-    return RerankingConfig(model=str(model), top_k=int(section.get("reranking_top_k", 100)))
+    return RerankingConfig(
+        model=str(model),
+        top_k=int(section.get("reranking_top_k", 100)),
+        max_seq_length=section.get("reranking_max_seq_length"),
+    )
