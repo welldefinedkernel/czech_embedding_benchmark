@@ -1,0 +1,8 @@
+{
+  "infgrad/Prism-Qwen3.5-Reranker-0.8B": {
+    "Mean(Task)": 0.8449138803323663,
+    "Mean(TaskType)": 0.8449138803323663,
+    "Retrieval": 0.8449138803323663,
+    "Rank": 1
+  }
+}

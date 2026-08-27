@@ -94,6 +94,27 @@ Each retriever's top 100 documents rescored by a cross-encoder. ΔMRR@10 is meas
 | 15 | [`geevec-ai/geevec-embeddings-1.0-lite`](mteb/ctdc_synthetic_rerank/geevec-ai__geevec-embeddings-1.0-lite/jinaai__jina-reranker-v2-base-multilingual/) | 0.8147 | 0.8390 | 0.8147 | 0.7494 | 0.9119 | 0.9185 | 0.9220 | +0.2247 | 2026-08-16 |
 | 16 | [`Seznam/simcse-retromae-small-cs`](mteb/ctdc_synthetic_rerank/Seznam__simcse-retromae-small-cs/jinaai__jina-reranker-v2-base-multilingual/) | 0.7994 | 0.8217 | 0.7994 | 0.7395 | 0.8886 | 0.8941 | 0.8968 | +0.3305 | 2026-08-17 |
 
+### [`infgrad/Prism-Qwen3.5-Reranker-0.8B`](https://huggingface.co/infgrad/Prism-Qwen3.5-Reranker-0.8B)
+
+| # | Retriever | MRR@10 | nDCG@10 | MAP@10 | Recall@1 | Recall@10 | Recall@20 | Recall@100 | ΔMRR@10 | Date |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | [`Qwen/Qwen3-Embedding-8B`](mteb/ctdc_synthetic_rerank/Qwen__Qwen3-Embedding-8B/infgrad__Prism-Qwen3.5-Reranker-0.8B/) | 0.8474 | 0.8669 | 0.8336 | 0.7492 | 0.9680 | 0.9804 | 0.9900 | +0.0658 | 2026-08-24 |
+| 2 | [`microsoft/harrier-oss-v1-27b`](mteb/ctdc_synthetic_rerank/microsoft__harrier-oss-v1-27b/infgrad__Prism-Qwen3.5-Reranker-0.8B/) | 0.8461 | 0.8685 | 0.8349 | 0.7497 | 0.9700 | 0.9823 | 0.9923 | +0.0632 | 2026-08-25 |
+| 3 | [`BAAI/bge-m3`](mteb/ctdc_synthetic_rerank/BAAI__bge-m3/infgrad__Prism-Qwen3.5-Reranker-0.8B/) | 0.8455 | 0.8657 | 0.8324 | 0.7464 | 0.9666 | 0.9792 | 0.9874 | +0.0591 | 2026-08-26 |
+| 4 | [`tencent/KaLM-Embedding-Gemma3-12B-2511`](mteb/ctdc_synthetic_rerank/tencent__KaLM-Embedding-Gemma3-12B-2511/infgrad__Prism-Qwen3.5-Reranker-0.8B/) | 0.8452 | 0.8664 | 0.8328 | 0.7482 | 0.9681 | 0.9800 | 0.9887 | +0.0644 | 2026-08-24 |
+| 5 | [`intfloat/multilingual-e5-large`](mteb/ctdc_synthetic_rerank/intfloat__multilingual-e5-large/infgrad__Prism-Qwen3.5-Reranker-0.8B/) | 0.8449 | 0.8662 | 0.8329 | 0.7481 | 0.9668 | 0.9801 | 0.9874 | +0.0876 | 2026-08-26 |
+| 6 | [`nvidia/llama-embed-nemotron-8b`](mteb/ctdc_synthetic_rerank/nvidia__llama-embed-nemotron-8b/infgrad__Prism-Qwen3.5-Reranker-0.8B/) | 0.8448 | 0.8665 | 0.8332 | 0.7482 | 0.9674 | 0.9784 | 0.9880 | +0.0659 | 2026-08-24 |
+| 7 | [`Octen/Octen-Embedding-8B`](mteb/ctdc_synthetic_rerank/Octen__Octen-Embedding-8B/infgrad__Prism-Qwen3.5-Reranker-0.8B/) | 0.8445 | 0.8663 | 0.8328 | 0.7478 | 0.9676 | 0.9795 | 0.9887 | +0.0837 | 2026-08-24 |
+| 8 | [`Qwen/Qwen3-Embedding-4B`](mteb/ctdc_synthetic_rerank/Qwen__Qwen3-Embedding-4B/infgrad__Prism-Qwen3.5-Reranker-0.8B/) | 0.8435 | 0.8647 | 0.8309 | 0.7456 | 0.9668 | 0.9781 | 0.9869 | +0.0700 | 2026-08-24 |
+| 9 | [`microsoft/harrier-oss-v1-0.6b`](mteb/ctdc_synthetic_rerank/microsoft__harrier-oss-v1-0.6b/infgrad__Prism-Qwen3.5-Reranker-0.8B/) | 0.8430 | 0.8640 | 0.8304 | 0.7449 | 0.9658 | 0.9776 | 0.9866 | +0.0714 | 2026-08-25 |
+| 10 | [`codefuse-ai/F2LLM-v2-14B`](mteb/ctdc_synthetic_rerank/codefuse-ai__F2LLM-v2-14B/infgrad__Prism-Qwen3.5-Reranker-0.8B/) | 0.8398 | 0.8611 | 0.8282 | 0.7440 | 0.9607 | 0.9727 | 0.9799 | +0.1428 | 2026-08-25 |
+| 11 | [`jinaai/jina-embeddings-v5-text-small`](mteb/ctdc_synthetic_rerank/jinaai__jina-embeddings-v5-text-small/infgrad__Prism-Qwen3.5-Reranker-0.8B/) | 0.8383 | 0.8603 | 0.8276 | 0.7431 | 0.9592 | 0.9708 | 0.9794 | +0.0952 | 2026-08-26 |
+| 12 | [`intfloat/multilingual-e5-small`](mteb/ctdc_synthetic_rerank/intfloat__multilingual-e5-small/infgrad__Prism-Qwen3.5-Reranker-0.8B/) | 0.8378 | 0.8597 | 0.8270 | 0.7432 | 0.9584 | 0.9691 | 0.9749 | +0.1136 | 2026-08-26 |
+| 13 | [`codefuse-ai/F2LLM-v2-8B`](mteb/ctdc_synthetic_rerank/codefuse-ai__F2LLM-v2-8B/infgrad__Prism-Qwen3.5-Reranker-0.8B/) | 0.8373 | 0.8606 | 0.8278 | 0.7432 | 0.9594 | 0.9706 | 0.9780 | +0.1378 | 2026-08-26 |
+| 14 | [`google/embeddinggemma-300m`](mteb/ctdc_synthetic_rerank/google__embeddinggemma-300m/infgrad__Prism-Qwen3.5-Reranker-0.8B/) | 0.8269 | 0.8484 | 0.8165 | 0.7345 | 0.9448 | 0.9555 | 0.9619 | +0.1377 | 2026-08-26 |
+| 15 | [`geevec-ai/geevec-embeddings-1.0-lite`](mteb/ctdc_synthetic_rerank/geevec-ai__geevec-embeddings-1.0-lite/infgrad__Prism-Qwen3.5-Reranker-0.8B/) | 0.7955 | 0.8176 | 0.7877 | 0.7100 | 0.9080 | 0.9176 | 0.9220 | +0.2055 | 2026-08-26 |
+| 16 | [`Seznam/simcse-retromae-small-cs`](mteb/ctdc_synthetic_rerank/Seznam__simcse-retromae-small-cs/infgrad__Prism-Qwen3.5-Reranker-0.8B/) | 0.7809 | 0.8026 | 0.7750 | 0.7028 | 0.8857 | 0.8931 | 0.8968 | +0.3120 | 2026-08-24 |
+
 ### [`mixedbread-ai/mxbai-rerank-large-v2`](https://huggingface.co/mixedbread-ai/mxbai-rerank-large-v2)
 
 | # | Retriever | MRR@10 | nDCG@10 | MAP@10 | Recall@1 | Recall@10 | Recall@20 | Recall@100 | ΔMRR@10 | Date |
